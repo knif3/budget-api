@@ -1,8 +1,8 @@
 import express from 'express';
-import { CompanyController } from '../controllers/company-controller';
+import { CompanyController } from '../../controllers/company-controller';
 import { createValidator } from 'express-joi-validation';
-import { validateToken } from '../services/core/validate-token-service';
-import { companySchema } from '../schemas/company-schema';
+import { validateToken } from '../../services/core/validate-token-service';
+import { companySchema } from '../../schemas/company-schema';
 
 const validator = createValidator();
 

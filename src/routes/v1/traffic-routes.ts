@@ -1,8 +1,8 @@
 import express from 'express';
-import { TrafficController } from '../controllers/traffic-controller';
+import { TrafficController } from '../../controllers/traffic-controller';
 import { createValidator } from 'express-joi-validation';
-import { validateToken } from '../services/core/validate-token-service';
-import { trafficSchema } from '../schemas/traffic-schema';
+import { validateToken } from '../../services/core/validate-token-service';
+import { trafficSchema } from '../../schemas/traffic-schema';
 
 const validator = createValidator();
 

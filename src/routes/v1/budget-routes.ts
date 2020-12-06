@@ -1,9 +1,9 @@
 import express from 'express';
-import { BudgetController } from '../controllers/budget-controller';
+import { BudgetController } from '../../controllers/budget-controller';
 import Joi from '@hapi/joi';
 import { createValidator } from 'express-joi-validation';
-import { validateToken } from '../services/core/validate-token-service';
-import { budgetSchema } from '../schemas/budget-schema';
+import { validateToken } from '../../services/core/validate-token-service';
+import { budgetSchema } from '../../schemas/budget-schema';
 
 const validator = createValidator();
 

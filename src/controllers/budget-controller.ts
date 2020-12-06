@@ -24,7 +24,7 @@ export class BudgetController {
 
   static getSingle = async ({params}: Request, res: Response): Promise<void> => {
     try {
-      const user = await BudgetService.getSingle(params.userId);
+      const user = await BudgetService.getSingle(params.budgetId);
       if (!user) {
         res.status(404).json({
           error: 'Resource not found!'
@@ -34,7 +34,7 @@ export class BudgetController {
 
       res.json(user);
     } catch ({message}) {
-      logger.error(`${message} ${params.userId}`);
+      logger.error(`${message} ${params.budgetId}`);
       res.status(500).json({
         error: message
       });
@@ -60,7 +60,7 @@ export class BudgetController {
 
   static update = async ({params, body}: Request, res: Response): Promise<void> => {
     try {
-      const user = await BudgetService.update(params.userId, body);
+      const user = await BudgetService.update(params.budgetId, body);
       logger.info('Resource updated');
       res.json(user);
     } catch (err) {
@@ -79,7 +79,7 @@ export class BudgetController {
 
   // static softDelete = async ({ params }: Request, res: Response): Promise<void> => {
   //     try {
-  //         const user = await BudgetService.softDeleteUser(params.userId);
+  //         const user = await BudgetService.softDeleteUser(params.budgetId);
   //
   //         logger.info(`Item has been soft-deleted: ${user}`);
   //         res.status(200).json(user);

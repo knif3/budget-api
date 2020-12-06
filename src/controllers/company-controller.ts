@@ -20,7 +20,7 @@ export class CompanyController {
 
   static getSingle = async ({params}: Request, res: Response): Promise<void> => {
     try {
-      const user = await CompanyService.getSingle(params.userId);
+      const user = await CompanyService.getSingle(params.companyId);
       if (!user) {
         res.status(404).json({
           error: 'Resource not found!'
@@ -30,7 +30,7 @@ export class CompanyController {
 
       res.json(user);
     } catch ({message}) {
-      logger.error(`${message} ${params.userId}`);
+      logger.error(`${message} ${params.companyId}`);
       res.status(500).json({
         error: message
       });
@@ -56,7 +56,7 @@ export class CompanyController {
 
   static update = async ({params, body}: Request, res: Response): Promise<void> => {
     try {
-      const user = await CompanyService.update(params.userId, body);
+      const user = await CompanyService.update(params.companyId, body);
       logger.info('Resource updated');
       res.json(user);
     } catch (err) {
@@ -75,7 +75,7 @@ export class CompanyController {
 
   // static softDelete = async ({ params }: Request, res: Response): Promise<void> => {
   //     try {
-  //         const user = await CompanyService.softDeleteUser(params.userId);
+  //         const user = await CompanyService.softDeleteUser(params.companyId);
   //
   //         logger.info(`Item has been soft-deleted: ${user}`);
   //         res.status(200).json(user);

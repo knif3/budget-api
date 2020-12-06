@@ -24,7 +24,7 @@ export class TrafficController {
 
   static getSingle = async ({params}: Request, res: Response): Promise<void> => {
     try {
-      const user = await TrafficService.getSingle(params.userId);
+      const user = await TrafficService.getSingle(params.trafficId);
       if (!user) {
         res.status(404).json({
           error: 'Resource not found!'
@@ -34,7 +34,7 @@ export class TrafficController {
 
       res.json(user);
     } catch ({message}) {
-      logger.error(`${message} ${params.userId}`);
+      logger.error(`${message} ${params.trafficId}`);
       res.status(500).json({
         error: message
       });
@@ -60,7 +60,7 @@ export class TrafficController {
 
   static update = async ({params, body}: Request, res: Response): Promise<void> => {
     try {
-      const user = await TrafficService.update(params.userId, body);
+      const user = await TrafficService.update(params.trafficId, body);
       logger.info('Resource updated');
       res.json(user);
     } catch (err) {
@@ -79,7 +79,7 @@ export class TrafficController {
 
   // static softDelete = async ({ params }: Request, res: Response): Promise<void> => {
   //     try {
-  //         const user = await TrafficService.softDeleteUser(params.userId);
+  //         const user = await TrafficService.softDeleteUser(params.trafficId);
   //
   //         logger.info(`Item has been soft-deleted: ${user}`);
   //         res.status(200).json(user);

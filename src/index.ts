@@ -5,6 +5,8 @@ import responseTime from 'response-time';
 import { logger } from './services/core/winston-logger-service';
 import { trafficRouter } from './routes/traffic-routes';
 import { userRouter } from './routes/user-routes';
+import { budgetRouter } from './routes/budget-routes';
+import { companyRouter } from './routes/company-routes';
 
 const app = express();
 const port = 8080;
@@ -18,6 +20,8 @@ app.use(responseTime((req: express.Request, res: express.Response, time: number)
 }));
 
 app.use('/user', userRouter);
+app.use('/budget', budgetRouter);
+app.use('/company', companyRouter);
 app.use('/traffic', trafficRouter);
 
 // app.get('/', (req: Request, res: Response) => {

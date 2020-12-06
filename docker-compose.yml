@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  app:
+    image: node:latest
+    restart: unless-stopped
+    entrypoint: yarn run dev:watch
+    ports:
+      - 8089:8080
+    volumes:
+      - /var/www/#dev/root/goodies-ts/:/app
+    working_dir: /app
+    user: '33'
+    depends_on:
+      - database
+
+  database:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: secret
+    ports:
+      - 5432:5432

@@ -12,16 +12,28 @@ const sequelize = new Sequelize(database, user, password, {
   dialect: 'postgres',
 });
 
-(async () => {
-  try {
-    await sequelize.authenticate();
-    await sequelize.sync();
+const sleep = (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-    console.log('Connection to the database has been established successfully.');
-  }
-  catch (error) {
-    console.error(error.message);
-    process.exit(-1);
+(async () => {
+  let retries = 0;
+  for (;;) {
+    try {
+      if (retries++ === 120) {
+        console.error('Failed to connect to the database!');
+        process.exit(-1);
+      }
+
+      await sequelize.authenticate();
+      await sequelize.sync();
+
+      console.log('Connection to the database has been established successfully.');
+      break;
+    } catch (error) {
+      console.error(`${error.message} - Waiting for database ...`);
+      await sleep(3000);
+    }
   }
 })();
 

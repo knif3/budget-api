@@ -5,11 +5,11 @@ import {
 import { UserService } from '../services/user-service';
 import { UserAutoSuggestsService } from '../services/user-auto-suggests-service';
 // import { UserGenerateFakeDataService } from '../services/user-generate-fake-data-service';
-import { logger } from '../services/winston-logger-service';
+import { logger } from '../services/core/winston-logger-service';
 import { ConflictError } from '../errors/conflict-error';
 import { NotFoundError } from '../errors/notfound-error';
-import { loginSchema } from '../schemas/login';
-import { authenticate } from '../services/authenticate-service';
+import { loginSchema } from '../schemas/login-schema';
+import { authenticate } from '../services/core/authenticate-service';
 
 export class UserController {
   static getAll = async (req: Request, res: Response): Promise<void> => {

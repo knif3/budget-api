@@ -1,7 +1,7 @@
 import { UserDataAccess } from '../data-access';
 import { User } from '../interfaces/user';
 import { ConflictError } from '../errors/conflict-error';
-import { logger } from './winston-logger-service';
+import { logger } from './core/winston-logger-service';
 
 class UserService {
     getAll = async (): Promise<User[]> => {

@@ -44,7 +44,7 @@ class TrafficDataAccess {
       ...data,
       id: uuid_v4(),
       amount: data.amount,
-      isDeleted: false
+      isDeleted: false,
     });
 
     return convertTrafficModelToTraffic(trafficModel);

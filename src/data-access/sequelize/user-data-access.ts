@@ -1,8 +1,8 @@
 import { User } from '../../interfaces/user';
 import { v4 as uuid_v4 } from 'uuid';
 import { Op } from 'sequelize';
-import { UserModel } from './models';
-import { hash } from '../../services/authenticate-service';
+import { TrafficModel, UserModel } from './models';
+import { hash } from '../../services/core/authenticate-service';
 import { NotFoundError } from '../../errors/notfound-error';
 
 class UserDataAccess {
@@ -10,7 +10,7 @@ class UserDataAccess {
     const userModels = await UserModel.findAll({
       // include: [
       //   {
-      //     model: GroupModel,
+      //     model: TrafficModel,
       //     through: {attributes: []}
       //   }
       // ]
@@ -23,7 +23,7 @@ class UserDataAccess {
     const userModel = await UserModel.findByPk(userId, {
       // include: [
       //   {
-      //     model: GroupModel,
+      //     model: TrafficModel,
       //     through: {attributes: []}
       //   }
       // ]

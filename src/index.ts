@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import fsWatcher from './services/fsWatcher';
 import cors from 'cors';
 import responseTime from 'response-time';
-import { logger } from './services/winston-logger-service';
+import { logger } from './services/core/winston-logger-service';
 import { trafficRouter } from './routes/traffic-routes';
 import { userRouter } from './routes/user-routes';
 

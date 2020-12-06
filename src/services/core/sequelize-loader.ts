@@ -17,10 +17,11 @@ const sleep = (ms: number) => {
 }
 
 (async () => {
+  const retriesLimit = 120;
   let retries = 0;
   for (;;) {
     try {
-      if (retries++ === 120) {
+      if (retries++ === retriesLimit) {
         console.error('Failed to connect to the database!');
         process.exit(-1);
       }
@@ -31,7 +32,7 @@ const sleep = (ms: number) => {
       console.log('Connection to the database has been established successfully.');
       break;
     } catch (error) {
-      console.error(`${error.message} - Waiting for database ...`);
+      console.error(`${error.message} - Waiting for database (${retries}/${retriesLimit}) ...`);
       await sleep(3000);
     }
   }

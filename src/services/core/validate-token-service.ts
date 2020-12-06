@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import {Request, Response, NextFunction} from 'express';
-import { UserToken } from '../interfaces/user-token';
+import { UserToken } from '../../interfaces/user-token';
 
 export let userToken: UserToken;
 

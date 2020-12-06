@@ -2,7 +2,7 @@ import {
   DataTypes,
   Model
 } from 'sequelize';
-import { sequelize } from '../../../services/sequelize-loader';
+import { sequelize } from '../../../services/core/sequelize-loader';
 
 export class UserModel extends Model {
 }

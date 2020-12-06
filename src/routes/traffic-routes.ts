@@ -2,14 +2,10 @@ import express from 'express';
 import { TrafficController } from '../controllers/traffic-controller';
 import Joi from '@hapi/joi';
 import { createValidator } from 'express-joi-validation';
-import { validateToken } from '../services/validate-token-service';
+import { validateToken } from '../services/core/validate-token-service';
+import { trafficSchema } from '../schemas/traffic-schema';
 
 const validator = createValidator();
-
-const trafficSchema = Joi.object({
-    title: Joi.string().required(),
-    amount: Joi.number().required(),
-});
 
 export const trafficRouter = express.Router()
     // .post('/login', UserController.login)

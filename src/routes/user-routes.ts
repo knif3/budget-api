@@ -1,8 +1,8 @@
 import express from 'express';
 import { UserController } from '../controllers/user-controller';
 import { createValidator } from 'express-joi-validation';
-import { validateToken } from '../services/validate-token-service';
-import { userSchema } from '../schemas/user';
+import { validateToken } from '../services/core/validate-token-service';
+import { userSchema } from '../schemas/user-schema';
 
 const validator = createValidator();
 

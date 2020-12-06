@@ -1,5 +1,5 @@
-import { User } from '../interfaces/user';
-import { UserService } from './user-service';
+import { User } from '../../interfaces/user';
+import { UserService } from '../user-service';
 import crypto, { BinaryLike } from 'crypto';
 import jwt from 'jsonwebtoken';
 

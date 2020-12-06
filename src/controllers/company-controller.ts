@@ -2,19 +2,15 @@ import {
   Request,
   Response
 } from 'express';
-import { TrafficService } from '../services/traffic-service';
-// import { UserAutoSuggestsService } from '../services/user-auto-suggests-service';
-// import { UserGenerateFakeDataService } from '../services/user-generate-fake-data-service';
+import { CompanyService } from '../services/company-service';
 import { logger } from '../services/core/winston-logger-service';
 import { ConflictError } from '../errors/conflict-error';
 import { NotFoundError } from '../errors/notfound-error';
-import { loginSchema } from '../schemas/login-schema';
-import { authenticate } from '../services/core/authenticate-service';
 
-export class TrafficController {
+export class CompanyController {
   static getAll = async (req: Request, res: Response): Promise<void> => {
     try {
-      res.json(await TrafficService.getAll());
+      res.json(await CompanyService.getAll());
     } catch ({message}) {
       res.status(500).json({
         error: message
@@ -24,7 +20,7 @@ export class TrafficController {
 
   static getSingle = async ({params}: Request, res: Response): Promise<void> => {
     try {
-      const user = await TrafficService.getSingle(params.userId);
+      const user = await CompanyService.getSingle(params.userId);
       if (!user) {
         res.status(404).json({
           error: 'Resource not found!'
@@ -43,7 +39,7 @@ export class TrafficController {
 
   static create = async ({body}: Request, res: Response): Promise<void> => {
     try {
-      const user = await TrafficService.createNew(body);
+      const user = await CompanyService.create(body);
       res.json(user);
     } catch (err) {
       if (err instanceof ConflictError) {
@@ -60,7 +56,7 @@ export class TrafficController {
 
   static update = async ({params, body}: Request, res: Response): Promise<void> => {
     try {
-      const user = await TrafficService.update(params.userId, body);
+      const user = await CompanyService.update(params.userId, body);
       logger.info('Resource updated');
       res.json(user);
     } catch (err) {
@@ -79,7 +75,7 @@ export class TrafficController {
 
   // static softDelete = async ({ params }: Request, res: Response): Promise<void> => {
   //     try {
-  //         const user = await TrafficService.softDeleteUser(params.userId);
+  //         const user = await CompanyService.softDeleteUser(params.userId);
   //
   //         logger.info(`Item has been soft-deleted: ${user}`);
   //         res.status(200).json(user);

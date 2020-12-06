@@ -18,7 +18,7 @@ class BudgetService {
     create = async (data: Omit<Budget, 'id'>): Promise<Budget> => {
         const user = await BudgetDataAccess.findByTitle(data.title);
         if (user) {
-            throw new ConflictError('Item already exists!');
+            throw new ConflictError('Resource already exists!');
         }
 
         return BudgetDataAccess.create(data);

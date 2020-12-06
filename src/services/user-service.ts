@@ -19,7 +19,7 @@ class UserService {
     createNew = async (data: Omit<User, 'id'>): Promise<User> => {
         const user = await UserDataAccess.findByLogin(data.login);
         if (user) {
-            throw new ConflictError('User already exists!');
+            throw new ConflictError('Resource already exists!');
         }
 
         return UserDataAccess.create(data);

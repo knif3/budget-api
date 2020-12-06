@@ -18,7 +18,7 @@ class TrafficService {
     createNew = async (data: Omit<Traffic, 'id'>): Promise<Traffic> => {
         const user = await TrafficDataAccess.findByTitle(data.title);
         if (user) {
-            throw new ConflictError('Traffic already exists!');
+            throw new ConflictError('Resource already exists!');
         }
 
         return TrafficDataAccess.create(data);

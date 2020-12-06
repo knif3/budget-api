@@ -18,7 +18,7 @@ class CompanyService {
     create = async (data: Omit<Company, 'id'>): Promise<Company> => {
         const user = await CompanyDataAccess.findByTitle(data.title);
         if (user) {
-            throw new ConflictError('Item already exists!');
+            throw new ConflictError('Resource already exists!');
         }
 
         return CompanyDataAccess.create(data);

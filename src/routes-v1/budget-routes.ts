@@ -12,6 +12,6 @@ export const budgetRouter = express.Router()
   // .get('/generateFakeUsers', validateToken, UserController.generateFakeUsers)
   .get('/getAll', validateToken, BudgetController.getAll)
   .get('/:budgetId', validateToken, BudgetController.getSingle)
-  .post('/', validator.body(budgetSchema), BudgetController.create)
-  .patch('/:budgetId', validator.body(budgetSchema), validateToken, BudgetController.update);
-// .delete('/:budgetId', validateToken, BudgetController.softDelete);
+  .post('/', validator.body(budgetSchema), validateToken, BudgetController.create)
+  .patch('/:budgetId', validator.body(budgetSchema), validateToken, BudgetController.update)
+  .delete('/:budgetId', validateToken, BudgetController.delete);

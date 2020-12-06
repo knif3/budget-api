@@ -127,7 +127,7 @@ export class UserController {
     try {
       const {userModel, token} = await authenticate({
         login: loginData.login,
-        password: loginData.password
+        password: loginData.password,
       });
 
       logger.info(`Token generated for user: ${userModel.login}; ${token}`);

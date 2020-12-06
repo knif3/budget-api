@@ -18,13 +18,15 @@ TrafficModel.init({
     type: DataTypes.STRING,
     references: {
       model: BudgetModel
-    }
+    },
+    onDelete: 'cascade',
   },
   companyId: {
     type: DataTypes.STRING,
     references: {
       model: CompanyModel
-    }
+    },
+    onDelete: 'cascade',
   },
   title: DataTypes.STRING,
   amount: DataTypes.INTEGER,
@@ -34,3 +36,6 @@ TrafficModel.init({
   sequelize,
   modelName: 'traffic'
 });
+
+TrafficModel.belongsTo(BudgetModel);
+TrafficModel.belongsTo(CompanyModel);

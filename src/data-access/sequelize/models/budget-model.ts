@@ -4,6 +4,7 @@ import {
 } from 'sequelize';
 import { sequelize } from '../../../services/core/sequelize-loader';
 import { UserModel } from './user-model';
+import { TrafficModel } from './traffic-model';
 
 export class BudgetModel extends Model {
 }
@@ -17,12 +18,13 @@ BudgetModel.init({
     type: DataTypes.STRING,
     references: {
       model: UserModel
-    }
+    },
+    onDelete: 'cascade',
   },
   active: DataTypes.BOOLEAN,
   budgetType: DataTypes.INTEGER,
   currency: DataTypes.STRING,
-  title: DataTypes.INTEGER,
+  title: DataTypes.STRING,
   openingBalance: DataTypes.INTEGER,
   accountNumber: DataTypes.STRING,
   creditCardNumber: DataTypes.STRING,
@@ -31,3 +33,5 @@ BudgetModel.init({
   sequelize,
   modelName: 'budget'
 });
+
+BudgetModel.belongsTo(UserModel);

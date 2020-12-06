@@ -17,7 +17,8 @@ CompanyModel.init({
     type: DataTypes.STRING,
     references: {
       model: UserModel
-    }
+    },
+    onDelete: 'cascade',
   },
   active: DataTypes.BOOLEAN,
   isPublic: DataTypes.BOOLEAN,
@@ -31,3 +32,6 @@ CompanyModel.init({
   sequelize,
   modelName: 'company'
 });
+
+CompanyModel.belongsTo(UserModel);
+

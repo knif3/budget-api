@@ -3,13 +3,9 @@ import {
   Response
 } from 'express';
 import { BudgetService } from '../services/budget-service';
-// import { UserAutoSuggestsService } from '../services/user-auto-suggests-service';
-// import { UserGenerateFakeDataService } from '../services/user-generate-fake-data-service';
 import { logger } from '../services/core/winston-logger-service';
 import { ConflictError } from '../errors/conflict-error';
 import { NotFoundError } from '../errors/notfound-error';
-import { loginSchema } from '../schemas/login-schema';
-import { authenticate } from '../services/core/authenticate-service';
 
 export class BudgetController {
   static getAll = async (req: Request, res: Response): Promise<void> => {
@@ -24,15 +20,15 @@ export class BudgetController {
 
   static getSingle = async ({params}: Request, res: Response): Promise<void> => {
     try {
-      const user = await BudgetService.getSingle(params.budgetId);
-      if (!user) {
+      const budget = await BudgetService.getSingle(params.budgetId);
+      if (!budget) {
         res.status(404).json({
           error: 'Resource not found!'
         });
         return;
       }
 
-      res.json(user);
+      res.json(budget);
     } catch ({message}) {
       logger.error(`${message} ${params.budgetId}`);
       res.status(500).json({
@@ -43,8 +39,8 @@ export class BudgetController {
 
   static create = async ({body}: Request, res: Response): Promise<void> => {
     try {
-      const user = await BudgetService.create(body);
-      res.json(user);
+      const budget = await BudgetService.create(body);
+      res.json(budget);
     } catch (err) {
       if (err instanceof ConflictError) {
         res.status(409);
@@ -60,9 +56,9 @@ export class BudgetController {
 
   static update = async ({params, body}: Request, res: Response): Promise<void> => {
     try {
-      const user = await BudgetService.update(params.budgetId, body);
+      const budget = await BudgetService.update(params.budgetId, body);
       logger.info('Resource updated');
-      res.json(user);
+      res.json(budget);
     } catch (err) {
       if (err instanceof NotFoundError) {
         res.status(404);
@@ -77,23 +73,23 @@ export class BudgetController {
     }
   };
 
-  // static softDelete = async ({ params }: Request, res: Response): Promise<void> => {
-  //     try {
-  //         const user = await BudgetService.softDeleteUser(params.budgetId);
-  //
-  //         logger.info(`Item has been soft-deleted: ${user}`);
-  //         res.status(200).json(user);
-  //     } catch (err) {
-  //         if (err instanceof NotFoundError) {
-  //             res.status(404);
-  //         } else {
-  //             res.status(500);
-  //         }
-  //
-  //         logger.error(`Failed to soft-delete item: ${err.message}`);
-  //         res.json({
-  //             error: err.message
-  //         });
-  //     }
-  // };
+  static delete = async ({params}: Request, res: Response): Promise<void> => {
+    try {
+      await BudgetService.delete(params.budgetId);
+
+      logger.info(`Resource has been deleted: ${params.budgetId}`);
+      res.status(204).send();
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        res.status(404);
+      } else {
+        res.status(500);
+      }
+
+      logger.error(`Failed to delete resource: ${err.message}`);
+      res.json({
+        error: err.message
+      });
+    }
+  };
 }

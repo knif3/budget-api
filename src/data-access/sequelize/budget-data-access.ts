@@ -1,31 +1,32 @@
 import { Budget } from '../../interfaces/budget';
 import { v4 as uuid_v4 } from 'uuid';
 import { Op } from 'sequelize';
-import { BudgetModel } from './models';
+import { BudgetModel, UserModel } from './models';
 import { NotFoundError } from '../../errors/notfound-error';
+import { userId } from '../../services/core/user-handler';
 
 class BudgetDataAccess {
   getAll = async (): Promise<Budget[]> => {
     const budgetModels = await BudgetModel.findAll({
-      // include: [
-      //   {
-      //     model: GroupModel,
-      //     through: {attributes: []}
-      //   }
-      // ]
+      where: {
+        userId: `${userId()}`,
+      },
     });
 
     return convertBudgetModelsToBudget(budgetModels);
   };
 
   getSingle = async (id: string): Promise<Budget | null> => {
-    const budgetModel = await BudgetModel.findByPk(id, {
-      // include: [
-      //   {
-      //     model: GroupModel,
-      //     through: {attributes: []}
-      //   }
-      // ]
+    const budgetModel = await BudgetModel.findOne({
+      where: {
+        id,
+        userId: `${userId()}`,
+      },
+      include: [
+        {
+          model: UserModel
+        }
+      ],
     });
 
     return budgetModel ? convertBudgetModelToBudget(budgetModel) : null;
@@ -33,7 +34,10 @@ class BudgetDataAccess {
 
   findByTitle = async (title: string): Promise<Budget | null> => {
     const budgetModel = await BudgetModel.findOne({
-      where: {title}
+      where: {
+        userId: userId(),
+        title,
+      }
     });
 
     return budgetModel ? convertBudgetModelToBudget(budgetModel) : null;
@@ -43,8 +47,8 @@ class BudgetDataAccess {
     const budgetModel = await BudgetModel.create({
       ...data,
       id: uuid_v4(),
-      // openingBalance: data.openingBalance,
-      // isDeleted: false,
+      active: true,
+      userId: userId(),
     });
 
     return convertBudgetModelToBudget(budgetModel);
@@ -58,32 +62,21 @@ class BudgetDataAccess {
 
     await budget.update({
       ...data,
-      // amount: data.openingBalance,
     });
 
     return convertBudgetModelToBudget(budget);
   };
 
-  autoSuggest = async (loginSubstring: string, limit: number): Promise<Budget[]> => {
-    const budgetModels = await BudgetModel.findAll({
-      where: {
-        login: {
-          [Op.iLike]: `%${loginSubstring}%`
-        }
-      },
-      // order: [
-      //   ['login', 'ASC']
-      // ],
-      limit,
-      // include: [
-      //   {
-      //     model: GroupModel,
-      //     through: {attributes: []}
-      //   }
-      // ]
-    });
+  delete = async (uuid: string): Promise<boolean> => {
+    // TODO user validation
+    const budget = await BudgetModel.findByPk(uuid);
+    if (!budget) {
+      throw new NotFoundError('Resource not found!');
+    }
 
-    return convertBudgetModelsToBudget(budgetModels);
+    await budget.destroy();
+
+    return !! await BudgetModel.findByPk(uuid);
   };
 }
 

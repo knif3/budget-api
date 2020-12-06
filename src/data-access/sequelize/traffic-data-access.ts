@@ -1,18 +1,31 @@
 import { Traffic } from '../../interfaces/traffic';
 import { v4 as uuid_v4 } from 'uuid';
-import { Op } from 'sequelize';
-import { TrafficModel } from './models';
+import { BudgetModel, CompanyModel, TrafficModel, UserModel } from './models';
 import { NotFoundError } from '../../errors/notfound-error';
+import { userId } from '../../services/core/user-handler';
 
 class TrafficDataAccess {
   getAll = async (): Promise<Traffic[]> => {
     const trafficModels = await TrafficModel.findAll({
-      // include: [
-      //   {
-      //     model: GroupModel,
-      //     through: {attributes: []}
-      //   }
-      // ]
+      include: [
+        {
+          model: BudgetModel,
+          where: {
+            userId: `${userId()}`,
+          },
+          attributes: [
+            'title',
+            'budgetType',
+            'currency',
+          ],
+        },
+        {
+          model: CompanyModel,
+          attributes: [
+            'title',
+          ]
+        }
+      ],
     });
 
     return convertTrafficModelsToTraffic(trafficModels);
@@ -20,12 +33,25 @@ class TrafficDataAccess {
 
   getSingle = async (id: string): Promise<Traffic | null> => {
     const trafficModel = await TrafficModel.findByPk(id, {
-      // include: [
-      //   {
-      //     model: GroupModel,
-      //     through: {attributes: []}
-      //   }
-      // ]
+      include: [
+        {
+          model: BudgetModel,
+          where: {
+            userId: `${userId()}`,
+          },
+          attributes: [
+            'title',
+            'budgetType',
+            'currency',
+          ],
+        },
+        {
+          model: CompanyModel,
+          attributes: [
+            'title',
+          ]
+        }
+      ],
     });
 
     return trafficModel ? convertTrafficModelToTraffic(trafficModel) : null;
@@ -64,26 +90,16 @@ class TrafficDataAccess {
     return convertTrafficModelToTraffic(traffic);
   };
 
-  autoSuggest = async (loginSubstring: string, limit: number): Promise<Traffic[]> => {
-    const trafficModels = await TrafficModel.findAll({
-      where: {
-        login: {
-          [Op.iLike]: `%${loginSubstring}%`
-        }
-      },
-      // order: [
-      //   ['login', 'ASC']
-      // ],
-      limit,
-      // include: [
-      //   {
-      //     model: GroupModel,
-      //     through: {attributes: []}
-      //   }
-      // ]
-    });
+  delete = async (uuid: string): Promise<boolean> => {
+    // TODO user validation
+    const traffic = await TrafficModel.findByPk(uuid);
+    if (!traffic) {
+      throw new NotFoundError('Resource not found!');
+    }
 
-    return convertTrafficModelsToTraffic(trafficModels);
+    await traffic.destroy();
+
+    return !! await TrafficModel.findByPk(uuid);
   };
 }
 

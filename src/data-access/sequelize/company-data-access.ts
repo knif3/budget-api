@@ -1,6 +1,5 @@
 import { Company } from '../../interfaces/company';
 import { v4 as uuid_v4 } from 'uuid';
-import { Op } from 'sequelize';
 import { CompanyModel } from './models';
 import { NotFoundError } from '../../errors/notfound-error';
 
@@ -64,26 +63,16 @@ class CompanyDataAccess {
     return convertCompanyModelToCompany(company);
   };
 
-  autoSuggest = async (loginSubstring: string, limit: number): Promise<Company[]> => {
-    const companyModels = await CompanyModel.findAll({
-      where: {
-        login: {
-          [Op.iLike]: `%${loginSubstring}%`
-        }
-      },
-      // order: [
-      //   ['login', 'ASC']
-      // ],
-      limit,
-      // include: [
-      //   {
-      //     model: GroupModel,
-      //     through: {attributes: []}
-      //   }
-      // ]
-    });
+  delete = async (uuid: string): Promise<boolean> => {
+    // TODO user validation
+    const company = await CompanyModel.findByPk(uuid);
+    if (!company) {
+      throw new NotFoundError('Resource not found!');
+    }
 
-    return convertCompanyModelsToCompany(companyModels);
+    await company.destroy();
+
+    return !! await CompanyModel.findByPk(uuid);
   };
 }
 

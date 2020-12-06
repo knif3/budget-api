@@ -12,5 +12,5 @@ export const companyRouter = express.Router()
   .get('/getAll', validateToken, CompanyController.getAll)
   .get('/:companyId', validateToken, CompanyController.getSingle)
   .post('/', validator.body(companySchema), CompanyController.create)
-  .patch('/:companyId', validator.body(companySchema), validateToken, CompanyController.update);
-// .delete('/:companyId', validateToken, CompanyController.softDelete);
+  .patch('/:companyId', validator.body(companySchema), validateToken, CompanyController.update)
+  .delete('/:companyId', validateToken, CompanyController.delete);

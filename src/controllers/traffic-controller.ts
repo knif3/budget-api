@@ -3,13 +3,9 @@ import {
   Response
 } from 'express';
 import { TrafficService } from '../services/traffic-service';
-// import { UserAutoSuggestsService } from '../services/user-auto-suggests-service';
-// import { UserGenerateFakeDataService } from '../services/user-generate-fake-data-service';
 import { logger } from '../services/core/winston-logger-service';
 import { ConflictError } from '../errors/conflict-error';
 import { NotFoundError } from '../errors/notfound-error';
-import { loginSchema } from '../schemas/login-schema';
-import { authenticate } from '../services/core/authenticate-service';
 
 export class TrafficController {
   static getAll = async (req: Request, res: Response): Promise<void> => {
@@ -77,23 +73,23 @@ export class TrafficController {
     }
   };
 
-  // static softDelete = async ({ params }: Request, res: Response): Promise<void> => {
-  //     try {
-  //         const user = await TrafficService.softDeleteUser(params.trafficId);
-  //
-  //         logger.info(`Item has been soft-deleted: ${user}`);
-  //         res.status(200).json(user);
-  //     } catch (err) {
-  //         if (err instanceof NotFoundError) {
-  //             res.status(404);
-  //         } else {
-  //             res.status(500);
-  //         }
-  //
-  //         logger.error(`Failed to soft-delete item: ${err.message}`);
-  //         res.json({
-  //             error: err.message
-  //         });
-  //     }
-  // };
+  static delete = async ({params}: Request, res: Response): Promise<void> => {
+    try {
+      await TrafficService.delete(params.trafficId);
+
+      logger.info(`Resource has been deleted: ${params.trafficId}`);
+      res.status(204).send();
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        res.status(404);
+      } else {
+        res.status(500);
+      }
+
+      logger.error(`Failed to delete resource: ${err.message}`);
+      res.json({
+        error: err.message
+      });
+    }
+  };
 }

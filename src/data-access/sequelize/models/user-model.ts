@@ -3,6 +3,7 @@ import {
   Model
 } from 'sequelize';
 import { sequelize } from '../../../services/core/sequelize-loader';
+import { BudgetModel } from './budget-model';
 
 export class UserModel extends Model {
 }

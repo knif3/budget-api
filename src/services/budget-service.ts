@@ -3,36 +3,34 @@ import { Budget } from '../interfaces/budget';
 import { ConflictError } from '../errors/conflict-error';
 
 class BudgetService {
-    getAll = async (): Promise<Budget[]> => {
-        return BudgetDataAccess.getAll();
+  getAll = async (): Promise<Budget[]> => {
+    return BudgetDataAccess.getAll();
+  }
+
+  getSingle = async (id: string): Promise<Budget | null> => {
+    return BudgetDataAccess.getSingle(id);
+  }
+
+  // getSingleByLogin = async (title: string): Promise<Budget | null> => {
+  //     return BudgetDataAccess.findByTitle(title);
+  // }
+
+  create = async (data: Omit<Budget, 'id'>): Promise<Budget> => {
+    const user = await BudgetDataAccess.findByTitle(data.title);
+    if (user) {
+      throw new ConflictError('Resource already exists!');
     }
 
-    getSingle = async (id: string): Promise<Budget | null> => {
-        return BudgetDataAccess.getSingle(id);
-    }
+    return BudgetDataAccess.create(data);
+  }
 
-    // getSingleByLogin = async (title: string): Promise<Budget | null> => {
-    //     return BudgetDataAccess.findByTitle(title);
-    // }
+  update = async (uuid: string, data: Omit<Budget, 'id'>): Promise<Budget> => {
+    return BudgetDataAccess.update(uuid, data);
+  }
 
-    create = async (data: Omit<Budget, 'id'>): Promise<Budget> => {
-        const user = await BudgetDataAccess.findByTitle(data.title);
-        if (user) {
-            throw new ConflictError('Resource already exists!');
-        }
-
-        return BudgetDataAccess.create(data);
-    }
-
-    update = async (uuid: string, data: Partial<Budget>): Promise<Budget> => {
-        return BudgetDataAccess.update(uuid, data);
-    }
-
-    // softDeleteBudget = async (uuid: string): Promise<Budget> => {
-    //     return BudgetDataAccess.update(uuid, {
-    //         isDeleted: true
-    //     });
-    // }
+  delete = async (uuid: string): Promise<boolean> => {
+    return BudgetDataAccess.delete(uuid);
+  }
 }
 
 const budgetService = new BudgetService();

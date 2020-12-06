@@ -3,10 +3,10 @@ import fsWatcher from './services/fsWatcher';
 import cors from 'cors';
 import responseTime from 'response-time';
 import { logger } from './services/core/winston-logger-service';
-import { trafficRouter } from './routes/traffic-routes';
-import { userRouter } from './routes/user-routes';
-import { budgetRouter } from './routes/budget-routes';
-import { companyRouter } from './routes/company-routes';
+import { trafficRouter } from './routes-v1/traffic-routes';
+import { userRouter } from './routes-v1/user-routes';
+import { budgetRouter } from './routes-v1/budget-routes';
+import { companyRouter } from './routes-v1/company-routes';
 
 const app = express();
 const port = 8080;
@@ -19,10 +19,10 @@ app.use(responseTime((req: express.Request, res: express.Response, time: number)
   logger.info(`${req.method} ${req.originalUrl} ${time.toPrecision(5)}ms`);
 }));
 
-app.use('/user', userRouter);
-app.use('/budget', budgetRouter);
-app.use('/company', companyRouter);
-app.use('/traffic', trafficRouter);
+app.use('/v1/user', userRouter);
+app.use('/v1/budget', budgetRouter);
+app.use('/v1/company', companyRouter);
+app.use('/v1/traffic', trafficRouter);
 
 // app.get('/', (req: Request, res: Response) => {
 //   res.json({

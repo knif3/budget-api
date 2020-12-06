@@ -1,6 +1,6 @@
 export interface UserToken {
     id: string;
-    username: string;
+    login: string;
     email: string;
     iat: number;
     exp: number;

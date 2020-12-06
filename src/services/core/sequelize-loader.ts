@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
+import { logger } from './winston-logger-service';
 
 dotenv.config();
 const database_host = process.env.DATABASE_HOST || '';
@@ -22,17 +23,17 @@ const sleep = (ms: number) => {
   for (;;) {
     try {
       if (retries++ === retriesLimit) {
-        console.error('Failed to connect to the database!');
+        logger.error('Failed to connect to the database!');
         process.exit(-1);
       }
 
       await sequelize.authenticate();
       await sequelize.sync();
 
-      console.log('Connection to the database has been established successfully.');
+      logger.info('Connection to the database has been established successfully.');
       break;
     } catch (error) {
-      console.error(`${error.message} - Waiting for database (${retries}/${retriesLimit}) ...`);
+      logger.warn(`${error.message} - Waiting for database (${retries}/${retriesLimit}) ...`);
       await sleep(3000);
     }
   }

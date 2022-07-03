@@ -1,7 +1,4 @@
-import {
-  Request,
-  Response,
-} from 'express';
+import { Request, Response } from 'express';
 import { UserService } from '../services/user-service';
 import { UserAutoSuggestsService } from '../services/user-auto-suggests-service';
 // import { UserGenerateFakeDataService } from '../services/user-generate-fake-data-service';
@@ -22,7 +19,10 @@ export class UserController {
     }
   };
 
-  static getSingle = async ({ params }: Request, res: Response): Promise<void> => {
+  static getSingle = async (
+    { params }: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const user = await UserService.getSingle(params.userId);
       if (!user) {
@@ -45,7 +45,7 @@ export class UserController {
     try {
       const user = await UserService.createNew(body);
       res.json(user);
-    } catch (err) {
+    } catch (err: any) {
       if (err instanceof ConflictError) {
         res.status(409);
       } else {
@@ -58,17 +58,16 @@ export class UserController {
     }
   };
 
-  static update = async ({ params, body }: Request, res: Response): Promise<void> => {
+  static update = async (
+    { params, body }: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const user = await UserService.update(params.userId, body);
       logger.info('User updated');
       res.json(user);
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        res.status(404);
-      } else {
-        res.status(500);
-      }
+    } catch (err: any) {
+      res.status(err instanceof NotFoundError ? 404 : 500);
 
       logger.error(`Failed to update user: ${err.message}`);
       res.status(500).json({
@@ -77,18 +76,17 @@ export class UserController {
     }
   };
 
-  static softDelete = async ({ params }: Request, res: Response): Promise<void> => {
+  static softDelete = async (
+    { params }: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const user = await UserService.softDeleteUser(params.userId);
 
       logger.info(`User has been soft-deleted: ${user}`);
       res.status(200).json(user);
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        res.status(404);
-      } else {
-        res.status(500);
-      }
+    } catch (err: any) {
+      res.status(err instanceof NotFoundError ? 404 : 500);
 
       logger.error(`Failed to soft-delete user: ${err.message}`);
       res.json({
@@ -103,7 +101,10 @@ export class UserController {
   //     res.status(204).send();
   // };
 
-  static getAutoSuggestUsers = async (req: Request, res: Response): Promise<void> => {
+  static getAutoSuggestUsers = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     const { keyword, limit = '10' } = req.params;
     const results = await UserAutoSuggestsService(keyword, parseInt(limit, 10));
     res.json(results);

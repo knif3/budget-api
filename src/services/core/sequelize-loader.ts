@@ -28,10 +28,14 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
       await sequelize.authenticate();
       await sequelize.sync();
 
-      logger.info('Connection to the database has been established successfully.');
+      logger.info(
+        'Connection to the database has been established successfully.'
+      );
       break;
-    } catch (error) {
-      logger.warn(`${error.message} - Waiting for database (${retries}/${retriesLimit}) ...`);
+    } catch (error: any) {
+      logger.warn(
+        `${error.message} - Waiting for database (${retries}/${retriesLimit}) ...`
+      );
       await sleep(3000);
     }
   }

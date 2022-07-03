@@ -41,7 +41,7 @@ export class TrafficController {
     try {
       const user = await TrafficService.createNew(body);
       res.json(user);
-    } catch (err) {
+    } catch (err: any) {
       if (err instanceof ConflictError) {
         res.status(409);
       } else {
@@ -59,12 +59,8 @@ export class TrafficController {
       const user = await TrafficService.update(params.trafficId, body);
       logger.info('Resource updated');
       res.json(user);
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        res.status(404);
-      } else {
-        res.status(500);
-      }
+    } catch (err: any) {
+      res.status(err instanceof NotFoundError ? 404 : 500);
 
       logger.error(`Failed to update resource: ${err.message}`);
       res.status(500).json({
@@ -79,12 +75,8 @@ export class TrafficController {
 
       logger.info(`Resource has been deleted: ${params.trafficId}`);
       res.status(204).send();
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        res.status(404);
-      } else {
-        res.status(500);
-      }
+    } catch (err: any) {
+      res.status(err instanceof NotFoundError ? 404 : 500);
 
       logger.error(`Failed to delete resource: ${err.message}`);
       res.json({

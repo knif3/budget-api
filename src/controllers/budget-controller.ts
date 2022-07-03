@@ -41,12 +41,8 @@ export class BudgetController {
     try {
       const budget = await BudgetService.create(body);
       res.json(budget);
-    } catch (err) {
-      if (err instanceof ConflictError) {
-        res.status(409);
-      } else {
-        res.status(500);
-      }
+    } catch (err: any) {
+      res.status(err instanceof ConflictError ? 409 : 500);
 
       res.json({
         error: err.message,
@@ -62,12 +58,8 @@ export class BudgetController {
       const budget = await BudgetService.update(params.budgetId, body);
       logger.info('Resource updated');
       res.json(budget);
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        res.status(404);
-      } else {
-        res.status(500);
-      }
+    } catch (err: any) {
+      res.status(err instanceof NotFoundError ? 404 : 500);
 
       logger.error(`Failed to update resource: ${err.message}`);
       res.status(500).json({
@@ -82,12 +74,8 @@ export class BudgetController {
 
       logger.info(`Resource has been deleted: ${params.budgetId}`);
       res.status(204).send();
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        res.status(404);
-      } else {
-        res.status(500);
-      }
+    } catch (err: any) {
+      res.status(err instanceof NotFoundError ? 404 : 500);
 
       logger.error(`Failed to delete resource: ${err.message}`);
       res.json({

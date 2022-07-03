@@ -1,6 +1,6 @@
 import {
   Request,
-  Response
+  Response,
 } from 'express';
 import { UserService } from '../services/user-service';
 import { UserAutoSuggestsService } from '../services/user-auto-suggests-service';
@@ -15,33 +15,33 @@ export class UserController {
   static getAll = async (req: Request, res: Response): Promise<void> => {
     try {
       res.json(await UserService.getAll());
-    } catch ({message}) {
+    } catch ({ message }) {
       res.status(500).json({
-        error: message
+        error: message,
       });
     }
   };
 
-  static getSingle = async ({params}: Request, res: Response): Promise<void> => {
+  static getSingle = async ({ params }: Request, res: Response): Promise<void> => {
     try {
       const user = await UserService.getSingle(params.userId);
       if (!user) {
         res.status(404).json({
-          error: 'User not found!'
+          error: 'User not found!',
         });
         return;
       }
 
       res.json(user);
-    } catch ({message}) {
+    } catch ({ message }) {
       logger.error(`${message} ${params.userId}`);
       res.status(500).json({
-        error: message
+        error: message,
       });
     }
   };
 
-  static create = async ({body}: Request, res: Response): Promise<void> => {
+  static create = async ({ body }: Request, res: Response): Promise<void> => {
     try {
       const user = await UserService.createNew(body);
       res.json(user);
@@ -53,12 +53,12 @@ export class UserController {
       }
 
       res.json({
-        error: err.message
+        error: err.message,
       });
     }
   };
 
-  static update = async ({params, body}: Request, res: Response): Promise<void> => {
+  static update = async ({ params, body }: Request, res: Response): Promise<void> => {
     try {
       const user = await UserService.update(params.userId, body);
       logger.info('User updated');
@@ -72,12 +72,12 @@ export class UserController {
 
       logger.error(`Failed to update user: ${err.message}`);
       res.status(500).json({
-        message: `Failed to update user! Error: ${err.message}`
+        message: `Failed to update user! Error: ${err.message}`,
       });
     }
   };
 
-  static softDelete = async ({params}: Request, res: Response): Promise<void> => {
+  static softDelete = async ({ params }: Request, res: Response): Promise<void> => {
     try {
       const user = await UserService.softDeleteUser(params.userId);
 
@@ -92,7 +92,7 @@ export class UserController {
 
       logger.error(`Failed to soft-delete user: ${err.message}`);
       res.json({
-        error: err.message
+        error: err.message,
       });
     }
   };
@@ -104,28 +104,28 @@ export class UserController {
   // };
 
   static getAutoSuggestUsers = async (req: Request, res: Response): Promise<void> => {
-    const {keyword, limit = '10'} = req.params;
+    const { keyword, limit = '10' } = req.params;
     const results = await UserAutoSuggestsService(keyword, parseInt(limit, 10));
     res.json(results);
   };
 
-  static login = async ({body}: Request, res: Response): Promise<void> => {
+  static login = async ({ body }: Request, res: Response): Promise<void> => {
     const loginData = {
       login: body.login,
       password: body.password,
     };
 
-    const {error} = await loginSchema.validate(loginData);
+    const { error } = await loginSchema.validate(loginData);
     if (error) {
       logger.error(`Error while validation the login data: ${error}`);
       res.status(400).json({
-        error
+        error,
       });
       return;
     }
 
     try {
-      const {userModel, token} = await authenticate({
+      const { userModel, token } = await authenticate({
         login: loginData.login,
         password: loginData.password,
       });
@@ -133,11 +133,11 @@ export class UserController {
       logger.info(`Token generated for user: ${userModel.login}; ${token}`);
 
       res.status(200).json({
-        token
+        token,
       });
-    } catch ({message}) {
+    } catch ({ message }) {
       res.status(500).json({
-        error: message
+        error: message,
       });
     }
   };

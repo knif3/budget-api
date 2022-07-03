@@ -1,7 +1,6 @@
 import fs from 'fs';
 
 const listen = (): void => {
-
   console.log(__dirname);
   const fsOptions = {
     recursive: true,
@@ -16,13 +15,12 @@ const listen = (): void => {
     console.log(`${datetime} ${eventType}: ${filename}`);
   });
 
-//let watch1 = new INotifyWait('.', {recursive: false});
-//watch1.on('ready', (filename: string) => {
-// console.log('watcher is watching');
-//});
-
+  // let watch1 = new INotifyWait('.', {recursive: false});
+  // watch1.on('ready', (filename: string) => {
+  // console.log('watcher is watching');
+  // });
 };
 
 export default {
   listen,
-}
+};

@@ -1,6 +1,6 @@
 import {
   Request,
-  Response
+  Response,
 } from 'express';
 import { TrafficService } from '../services/traffic-service';
 import { logger } from '../services/core/winston-logger-service';
@@ -11,33 +11,33 @@ export class TrafficController {
   static getAll = async (req: Request, res: Response): Promise<void> => {
     try {
       res.json(await TrafficService.getAll());
-    } catch ({message}) {
+    } catch ({ message }) {
       res.status(500).json({
-        error: message
+        error: message,
       });
     }
   };
 
-  static getSingle = async ({params}: Request, res: Response): Promise<void> => {
+  static getSingle = async ({ params }: Request, res: Response): Promise<void> => {
     try {
       const user = await TrafficService.getSingle(params.trafficId);
       if (!user) {
         res.status(404).json({
-          error: 'Resource not found!'
+          error: 'Resource not found!',
         });
         return;
       }
 
       res.json(user);
-    } catch ({message}) {
+    } catch ({ message }) {
       logger.error(`${message} ${params.trafficId}`);
       res.status(500).json({
-        error: message
+        error: message,
       });
     }
   };
 
-  static create = async ({body}: Request, res: Response): Promise<void> => {
+  static create = async ({ body }: Request, res: Response): Promise<void> => {
     try {
       const user = await TrafficService.createNew(body);
       res.json(user);
@@ -49,12 +49,12 @@ export class TrafficController {
       }
 
       res.json({
-        error: err.message
+        error: err.message,
       });
     }
   };
 
-  static update = async ({params, body}: Request, res: Response): Promise<void> => {
+  static update = async ({ params, body }: Request, res: Response): Promise<void> => {
     try {
       const user = await TrafficService.update(params.trafficId, body);
       logger.info('Resource updated');
@@ -68,12 +68,12 @@ export class TrafficController {
 
       logger.error(`Failed to update resource: ${err.message}`);
       res.status(500).json({
-        message: `Failed to update resource! Error: ${err.message}`
+        message: `Failed to update resource! Error: ${err.message}`,
       });
     }
   };
 
-  static delete = async ({params}: Request, res: Response): Promise<void> => {
+  static delete = async ({ params }: Request, res: Response): Promise<void> => {
     try {
       await TrafficService.delete(params.trafficId);
 
@@ -88,7 +88,7 @@ export class TrafficController {
 
       logger.error(`Failed to delete resource: ${err.message}`);
       res.json({
-        error: err.message
+        error: err.message,
       });
     }
   };

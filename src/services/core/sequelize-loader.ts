@@ -4,18 +4,16 @@ import { logger } from './winston-logger-service';
 
 dotenv.config();
 const database_host = process.env.DATABASE_HOST || '';
-const database = process.env.DATABASE || '';
-const user = process.env.USER || '';
-const password = process.env.PASSWORD || '';
+const database = process.env.DATABASE_NAME || '';
+const user = process.env.DATABASE_USER || '';
+const password = process.env.DATABASE_PASSWORD || '';
 
 const sequelize = new Sequelize(database, user, password, {
   host: database_host,
   dialect: 'postgres',
 });
 
-const sleep = (ms: number) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 (async () => {
   const retriesLimit = 120;

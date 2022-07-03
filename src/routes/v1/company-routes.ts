@@ -1,6 +1,6 @@
 import express from 'express';
-import { CompanyController } from '../../controllers/company-controller';
 import { createValidator } from 'express-joi-validation';
+import { CompanyController } from '../../controllers/company-controller';
 import { validateToken } from '../../services/core/validate-token-service';
 import { companySchema } from '../../schemas/company-schema';
 

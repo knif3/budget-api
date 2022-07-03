@@ -3,13 +3,9 @@ import { Budget } from '../interfaces/budget';
 import { ConflictError } from '../errors/conflict-error';
 
 class BudgetService {
-  getAll = async (): Promise<Budget[]> => {
-    return BudgetDataAccess.getAll();
-  }
+  getAll = async (): Promise<Budget[]> => BudgetDataAccess.getAll()
 
-  getSingle = async (id: string): Promise<Budget | null> => {
-    return BudgetDataAccess.getSingle(id);
-  }
+  getSingle = async (id: string): Promise<Budget | null> => BudgetDataAccess.getSingle(id)
 
   // getSingleByLogin = async (title: string): Promise<Budget | null> => {
   //     return BudgetDataAccess.findByTitle(title);
@@ -24,13 +20,9 @@ class BudgetService {
     return BudgetDataAccess.create(data);
   }
 
-  update = async (uuid: string, data: Omit<Budget, 'id'>): Promise<Budget> => {
-    return BudgetDataAccess.update(uuid, data);
-  }
+  update = async (uuid: string, data: Omit<Budget, 'id'>): Promise<Budget> => BudgetDataAccess.update(uuid, data)
 
-  delete = async (uuid: string): Promise<boolean> => {
-    return BudgetDataAccess.delete(uuid);
-  }
+  delete = async (uuid: string): Promise<boolean> => BudgetDataAccess.delete(uuid)
 }
 
 const budgetService = new BudgetService();

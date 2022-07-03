@@ -5,11 +5,11 @@ import { UserToken } from '../../interfaces/user-token';
 export let userToken: UserToken;
 
 export const validateToken = (req: Request, res: Response, next: NextFunction): void => {
-  let token = <string>req.headers['x-access-token'] || <string>req.headers['authorization'];
+  let token = <string>req.headers['x-access-token'] || <string>req.headers.authorization;
 
   if (!token) {
     res.status(401).json({
-      error: 'Auth token is not supplied. You should send it in the header, with the Bearer prefix.'
+      error: 'Auth token is not supplied. You should send it in the header, with the Bearer prefix.',
     });
     return;
   }

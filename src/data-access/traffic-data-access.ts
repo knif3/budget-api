@@ -1,8 +1,10 @@
-import { Traffic } from '../../interfaces/traffic';
 import { v4 as uuid_v4 } from 'uuid';
-import { BudgetModel, CompanyModel, TrafficModel, UserModel } from './models';
-import { NotFoundError } from '../../errors/notfound-error';
-import { userId } from '../../services/core/user-handler';
+import { Traffic } from '../interfaces/traffic';
+import {
+  BudgetModel, CompanyModel, TrafficModel, UserModel,
+} from './models';
+import { NotFoundError } from '../errors/notfound-error';
+import { userId } from '../services/core/user-handler';
 
 class TrafficDataAccess {
   getAll = async (): Promise<Traffic[]> => {
@@ -23,8 +25,8 @@ class TrafficDataAccess {
           model: CompanyModel,
           attributes: [
             'title',
-          ]
-        }
+          ],
+        },
       ],
     });
 
@@ -49,8 +51,8 @@ class TrafficDataAccess {
           model: CompanyModel,
           attributes: [
             'title',
-          ]
-        }
+          ],
+        },
       ],
     });
 
@@ -59,7 +61,7 @@ class TrafficDataAccess {
 
   findByTitle = async (title: string): Promise<Traffic | null> => {
     const trafficModel = await TrafficModel.findOne({
-      where: {title}
+      where: { title },
     });
 
     return trafficModel ? convertTrafficModelToTraffic(trafficModel) : null;
@@ -99,17 +101,13 @@ class TrafficDataAccess {
 
     await traffic.destroy();
 
-    return !! await TrafficModel.findByPk(uuid);
+    return !!await TrafficModel.findByPk(uuid);
   };
 }
 
-const convertTrafficModelToTraffic = (trafficModel: TrafficModel): Traffic => {
-  return (trafficModel as unknown) as Traffic;
-}
+const convertTrafficModelToTraffic = (trafficModel: TrafficModel): Traffic => (trafficModel as unknown) as Traffic;
 
-const convertTrafficModelsToTraffic = (trafficModels: TrafficModel[]): Traffic[] => {
-  return trafficModels.map(convertTrafficModelToTraffic);
-}
+const convertTrafficModelsToTraffic = (trafficModels: TrafficModel[]): Traffic[] => trafficModels.map(convertTrafficModelToTraffic);
 
 const trafficDataAccess = new TrafficDataAccess();
 Object.freeze(trafficDataAccess);

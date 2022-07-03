@@ -3,17 +3,11 @@ import { Traffic } from '../interfaces/traffic';
 import { ConflictError } from '../errors/conflict-error';
 
 class TrafficService {
-  getAll = async (): Promise<Traffic[]> => {
-    return TrafficDataAccess.getAll();
-  }
+  getAll = async (): Promise<Traffic[]> => TrafficDataAccess.getAll()
 
-  getSingle = async (userId: string): Promise<Traffic | null> => {
-    return TrafficDataAccess.getSingle(userId);
-  }
+  getSingle = async (userId: string): Promise<Traffic | null> => TrafficDataAccess.getSingle(userId)
 
-  getSingleByLogin = async (title: string): Promise<Traffic | null> => {
-    return TrafficDataAccess.findByTitle(title);
-  }
+  getSingleByLogin = async (title: string): Promise<Traffic | null> => TrafficDataAccess.findByTitle(title)
 
   createNew = async (data: Omit<Traffic, 'id'>): Promise<Traffic> => {
     const user = await TrafficDataAccess.findByTitle(data.title);
@@ -24,14 +18,9 @@ class TrafficService {
     return TrafficDataAccess.create(data);
   }
 
-  update = async (uuid: string, data: Partial<Traffic>): Promise<Traffic> => {
-    return TrafficDataAccess.update(uuid, data);
-  }
+  update = async (uuid: string, data: Partial<Traffic>): Promise<Traffic> => TrafficDataAccess.update(uuid, data)
 
-
-  delete = async (uuid: string): Promise<boolean> => {
-    return TrafficDataAccess.delete(uuid);
-  }
+  delete = async (uuid: string): Promise<boolean> => TrafficDataAccess.delete(uuid)
 }
 
 const trafficService = new TrafficService();

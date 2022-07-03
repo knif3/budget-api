@@ -1,9 +1,13 @@
-import { Budget } from '../../interfaces/budget';
-import { v4 as uuid_v4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { Op } from 'sequelize';
+import { Budget } from '../interfaces/budget';
 import { BudgetModel, UserModel } from './models';
-import { NotFoundError } from '../../errors/notfound-error';
-import { userId } from '../../services/core/user-handler';
+import { NotFoundError } from '../errors/notfound-error';
+import { userId } from '../services/core/user-handler';
+
+const convertBudgetModelToBudget = (budgetModel: BudgetModel): Budget => (budgetModel as unknown) as Budget;
+
+const convertBudgetModelsToBudget = (budgetModels: BudgetModel[]): Budget[] => budgetModels.map(convertBudgetModelToBudget);
 
 class BudgetDataAccess {
   getAll = async (): Promise<Budget[]> => {
@@ -24,8 +28,8 @@ class BudgetDataAccess {
       },
       include: [
         {
-          model: UserModel
-        }
+          model: UserModel,
+        },
       ],
     });
 
@@ -37,7 +41,7 @@ class BudgetDataAccess {
       where: {
         userId: userId(),
         title,
-      }
+      },
     });
 
     return budgetModel ? convertBudgetModelToBudget(budgetModel) : null;
@@ -46,7 +50,7 @@ class BudgetDataAccess {
   create = async (data: Partial<Budget>): Promise<Budget> => {
     const budgetModel = await BudgetModel.create({
       ...data,
-      id: uuid_v4(),
+      id: uuid(),
       active: true,
       userId: userId(),
     });
@@ -76,16 +80,8 @@ class BudgetDataAccess {
 
     await budget.destroy();
 
-    return !! await BudgetModel.findByPk(uuid);
+    return !!await BudgetModel.findByPk(uuid);
   };
-}
-
-const convertBudgetModelToBudget = (budgetModel: BudgetModel): Budget => {
-  return (budgetModel as unknown) as Budget;
-}
-
-const convertBudgetModelsToBudget = (budgetModels: BudgetModel[]): Budget[] => {
-  return budgetModels.map(convertBudgetModelToBudget);
 }
 
 const budgetDataAccess = new BudgetDataAccess();

@@ -1,9 +1,9 @@
-import { User } from '../../interfaces/user';
 import { v4 as uuid_v4 } from 'uuid';
 import { Op } from 'sequelize';
+import { User } from '../interfaces/user';
 import { TrafficModel, UserModel } from './models';
-import { hash } from '../../services/core/authenticate-service';
-import { NotFoundError } from '../../errors/notfound-error';
+import { hash } from '../services/core/authenticate-service';
+import { NotFoundError } from '../errors/notfound-error';
 
 class UserDataAccess {
   getAll = async (): Promise<User[]> => {
@@ -34,7 +34,7 @@ class UserDataAccess {
 
   findByLogin = async (login: string): Promise<User | null> => {
     const userModel = await UserModel.findOne({
-      where: {login}
+      where: { login },
     });
 
     return userModel ? convertUserModelToUser(userModel) : null;
@@ -59,7 +59,7 @@ class UserDataAccess {
 
     await user.update({
       ...data,
-      password: hash(data.password || '')
+      password: hash(data.password || ''),
     });
 
     return convertUserModelToUser(user);
@@ -69,11 +69,11 @@ class UserDataAccess {
     const userModels = await UserModel.findAll({
       where: {
         login: {
-          [Op.iLike]: `%${loginSubstring}%`
-        }
+          [Op.iLike]: `%${loginSubstring}%`,
+        },
       },
       order: [
-        ['login', 'ASC']
+        ['login', 'ASC'],
       ],
       limit,
       // include: [
@@ -88,13 +88,9 @@ class UserDataAccess {
   };
 }
 
-const convertUserModelToUser = (userModel: UserModel): User => {
-  return (userModel as unknown) as User;
-}
+const convertUserModelToUser = (userModel: UserModel): User => (userModel as unknown) as User;
 
-const convertUserModelsToUser = (userModels: UserModel[]): User[] => {
-  return userModels.map(convertUserModelToUser);
-}
+const convertUserModelsToUser = (userModels: UserModel[]): User[] => userModels.map(convertUserModelToUser);
 
 const userDataAccess = new UserDataAccess();
 Object.freeze(userDataAccess);

@@ -1,12 +1,13 @@
 import express, { Request, Response } from 'express';
-import fsWatcher from './services/fsWatcher';
 import cors from 'cors';
 import responseTime from 'response-time';
 import { logger } from './services/core/winston-logger-service';
-import { userRouter } from './routes/v1/user-routes';
-import { trafficRouter } from './routes/v1/traffic-routes';
-import { companyRouter } from './routes/v1/company-routes';
-import { budgetRouter } from './routes/v1/budget-routes';
+import {
+  userRouter,
+  trafficRouter,
+  companyRouter,
+  budgetRouter,
+} from './routes';
 
 const app = express();
 const port = 8080;
@@ -15,14 +16,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 
-app.use(responseTime((req: Request, res: Response, time: number) => {
-  logger.info(`${req.method} ${req.originalUrl} ${time.toPrecision(5)}ms`);
-}));
+app.use(
+  responseTime((req: Request, res: Response, time: number) => {
+    logger.info(`${req.method} ${req.originalUrl} ${time.toPrecision(5)}ms`);
+  })
+);
 
-app.use('/v1/user', userRouter);
-app.use('/v1/budget', budgetRouter);
-app.use('/v1/company', companyRouter);
-app.use('/v1/traffic', trafficRouter);
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/budget', budgetRouter);
+app.use('/api/v1/company', companyRouter);
+app.use('/api/v1/traffic', trafficRouter);
 
 // app.get('/', (req: Request, res: Response) => {
 //   res.json({
@@ -71,20 +74,18 @@ app.use('/v1/traffic', trafficRouter);
 //   res.json(items);
 // });
 
-//const INotifyWait = require('inotifywait');
+// const INotifyWait = require('inotifywait');
 
-
-//let watch1 = new INotifyWait('/app/var/dummy/', {recursive: false});
-//watch1.on('ready', (filename: string) => {
+// let watch1 = new INotifyWait('/app/var/dummy/', {recursive: false});
+// watch1.on('ready', (filename: string) => {
 //  console.log('watcher is watching');
-//});
-//watch1.on('add', (filename: string) => {
+// });
+// watch1.on('add', (filename: string) => {
 //  console.log(filename + ' added');
 //  watch1.close();
-//});
+// });
 
 // fsWatcher.listen();
-
 
 // start the express server
 app.listen(port, () => {

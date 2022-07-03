@@ -4,13 +4,9 @@ import { ConflictError } from '../errors/conflict-error';
 import { Budget } from '../interfaces/budget';
 
 class CompanyService {
-  getAll = async (): Promise<Company[]> => {
-    return CompanyDataAccess.getAll();
-  }
+  getAll = async (): Promise<Company[]> => CompanyDataAccess.getAll()
 
-  getSingle = async (id: string): Promise<Company | null> => {
-    return CompanyDataAccess.getSingle(id);
-  }
+  getSingle = async (id: string): Promise<Company | null> => CompanyDataAccess.getSingle(id)
 
   // getSingleByLogin = async (title: string): Promise<Company | null> => {
   //     return CompanyDataAccess.findByTitle(title);
@@ -25,13 +21,9 @@ class CompanyService {
     return CompanyDataAccess.create(data);
   }
 
-  update = async (uuid: string, data: Partial<Company>): Promise<Company> => {
-    return CompanyDataAccess.update(uuid, data);
-  }
+  update = async (uuid: string, data: Partial<Company>): Promise<Company> => CompanyDataAccess.update(uuid, data)
 
-  delete = async (uuid: string): Promise<boolean> => {
-    return CompanyDataAccess.delete(uuid);
-  }
+  delete = async (uuid: string): Promise<boolean> => CompanyDataAccess.delete(uuid)
 }
 
 const companyService = new CompanyService();

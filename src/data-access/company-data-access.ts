@@ -1,7 +1,7 @@
-import { Company } from '../../interfaces/company';
 import { v4 as uuid_v4 } from 'uuid';
+import { Company } from '../interfaces/company';
 import { CompanyModel } from './models';
-import { NotFoundError } from '../../errors/notfound-error';
+import { NotFoundError } from '../errors/notfound-error';
 
 class CompanyDataAccess {
   getAll = async (): Promise<Company[]> => {
@@ -32,7 +32,7 @@ class CompanyDataAccess {
 
   findByTitle = async (title: string): Promise<Company | null> => {
     const companyModel = await CompanyModel.findOne({
-      where: {title}
+      where: { title },
     });
 
     return companyModel ? convertCompanyModelToCompany(companyModel) : null;
@@ -72,17 +72,13 @@ class CompanyDataAccess {
 
     await company.destroy();
 
-    return !! await CompanyModel.findByPk(uuid);
+    return !!await CompanyModel.findByPk(uuid);
   };
 }
 
-const convertCompanyModelToCompany = (companyModel: CompanyModel): Company => {
-  return (companyModel as unknown) as Company;
-}
+const convertCompanyModelToCompany = (companyModel: CompanyModel): Company => (companyModel as unknown) as Company;
 
-const convertCompanyModelsToCompany = (companyModels: CompanyModel[]): Company[] => {
-  return companyModels.map(convertCompanyModelToCompany);
-}
+const convertCompanyModelsToCompany = (companyModels: CompanyModel[]): Company[] => companyModels.map(convertCompanyModelToCompany);
 
 const companyDataAccess = new CompanyDataAccess();
 Object.freeze(companyDataAccess);

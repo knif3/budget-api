@@ -1,9 +1,11 @@
-import { User } from '../../interfaces/user';
-import { UserService } from '../user-service';
 import crypto, { BinaryLike } from 'crypto';
 import jwt from 'jsonwebtoken';
+import { User } from '../../interfaces/user';
+import { UserService } from '../user-service';
 
 const userHashSecretKey = process.env.USER_HASH_SECRET_KEY || '';
+
+export const hash = (msg: BinaryLike) => crypto.createHmac('sha256', userHashSecretKey).update(msg).digest('hex');
 
 export const authenticate = async ({ login, password }: Pick<User, 'login' | 'password'>): Promise<{ userModel: User, token: string }> => {
   const userModel = await UserService.getSingleByLogin(login);
@@ -19,7 +21,7 @@ export const authenticate = async ({ login, password }: Pick<User, 'login' | 'pa
       id: userModel.id,
       login: userModel.login,
       email: userModel.email,
-    }, jwtSecretKey, {expiresIn: `${jwtExpiration}`});
+    }, jwtSecretKey, { expiresIn: `${jwtExpiration}` });
 
     return {
       userModel,
@@ -28,8 +30,4 @@ export const authenticate = async ({ login, password }: Pick<User, 'login' | 'pa
   }
 
   throw new Error('Invalid password!');
-};
-
-export const hash = (msg: BinaryLike) => {
-  return crypto.createHmac('sha256', userHashSecretKey).update(msg).digest('hex');
 };

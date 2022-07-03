@@ -1,0 +1,282 @@
+openapi: 3.0.0
+info:
+  title: Budget API
+  version: 1.0.0
+servers:
+  - url: http://localhost:20884
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+paths:
+  /v1/items:
+    get:
+      tags:
+        - default
+      summary: Get Items
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/user/getAll:
+    get:
+      tags:
+        - default
+      summary: User GetAll
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/user/f3e70710-caed-43d5-b5fa-8805dbf1da0e:
+    get:
+      tags:
+        - default
+      summary: User GetSingle
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/user/login:
+    post:
+      tags:
+        - default
+      summary: User Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                login: user
+                password: s3cr3t
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/user:
+    post:
+      tags:
+        - default
+      summary: User Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                login: user
+                password: s3cr3t
+                email: user@domain.com
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/budget/getAll:
+    get:
+      tags:
+        - default
+      summary: Budget GetAll for User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/budget/6bb9c87a-819c-4bfd-8a47-6cc2ff4a4356:
+    get:
+      tags:
+        - default
+      summary: Budget GetSingle for User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/budget:
+    post:
+      tags:
+        - default
+      summary: Budget Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                budgetType: 1
+                currency: EUR
+                title: Revolut
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/budget/93c49012-7fcf-4adb-b722-9997972a7668:
+    patch:
+      tags:
+        - default
+      summary: Budget Update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                budgetType: 1
+                currency: HUF
+                title: Revolut
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/budget/587f632e-610c-488f-8aec-cc79c1e549e0:
+    delete:
+      tags:
+        - default
+      summary: Budget Delete for User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/company/getAll:
+    get:
+      tags:
+        - default
+      summary: Company GetAll
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/company:
+    post:
+      tags:
+        - default
+      summary: Company Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                title: Teszt Kft.
+                transactionType: '1'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/company/52815bd5-5636-4115-aa0a-871c4e55cf41:
+    patch:
+      tags:
+        - default
+      summary: Company Update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                title: Teszt Ltd.
+                transactionType: '1'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/company/2a8698c6-fc59-4bbb-adf7-86be6875e994:
+    delete:
+      tags:
+        - default
+      summary: Company Delete
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/traffic/getAll:
+    get:
+      tags:
+        - default
+      summary: Traffic GetAll for User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/traffic/70193791-cefc-46d7-acd9-f52c2261774b:
+    get:
+      tags:
+        - default
+      summary: Traffic GetSingle for User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/traffic:
+    post:
+      tags:
+        - default
+      summary: Traffic Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                budgetId: '{{budgetId}}'
+                companyId: '{{companyId}}'
+                title: 'Tranzakció #01'
+                amount: 200
+                payday: '2020-12-06'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/traffic/9f6b5daf-1fe2-403e-afc1-6ecab1920107:
+    delete:
+      tags:
+        - default
+      summary: Traffic Delete for User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}

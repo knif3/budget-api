@@ -1,34 +1,33 @@
+import { injectable } from 'tsyringe';
 import { BudgetDataAccess } from '../data-access';
 import { Budget } from '../interfaces/budget';
 import { ConflictError } from '../errors/conflict-error';
 
-class BudgetService {
-  getAll = async (): Promise<Budget[]> => BudgetDataAccess.getAll();
+@injectable()
+export class BudgetService {
+  constructor(private budgetDataAccess: BudgetDataAccess) {}
+
+  getAll = async (): Promise<Budget[]> => this.budgetDataAccess.getAll();
 
   getSingle = async (id: string): Promise<Budget | null> =>
-    BudgetDataAccess.getSingle(id);
+    this.budgetDataAccess.getSingle(id);
 
   // getSingleByLogin = async (title: string): Promise<Budget | null> => {
-  //     return BudgetDataAccess.findByTitle(title);
+  //     return this.budgetDataAccess.findByTitle(title);
   // }
 
   create = async (data: Omit<Budget, 'id'>): Promise<Budget> => {
-    const user = await BudgetDataAccess.findByTitle(data.title);
+    const user = await this.budgetDataAccess.findByTitle(data.title);
     if (user) {
       throw new ConflictError('Resource already exists!');
     }
 
-    return BudgetDataAccess.create(data);
+    return this.budgetDataAccess.create(data);
   };
 
   update = async (uuid: string, data: Omit<Budget, 'id'>): Promise<Budget> =>
-    BudgetDataAccess.update(uuid, data);
+    this.budgetDataAccess.update(uuid, data);
 
   delete = async (uuid: string): Promise<boolean> =>
-    BudgetDataAccess.delete(uuid);
+    this.budgetDataAccess.delete(uuid);
 }
-
-const budgetService = new BudgetService();
-Object.freeze(budgetService);
-
-export { budgetService as BudgetService };

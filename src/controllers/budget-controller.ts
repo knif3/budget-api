@@ -1,13 +1,17 @@
 import { Request, Response } from 'express';
+import { injectable } from 'tsyringe';
 import { BudgetService } from '../services/budget-service';
 import { logger } from '../services/core/winston-logger-service';
 import { ConflictError } from '../errors/conflict-error';
 import { NotFoundError } from '../errors/notfound-error';
 
+@injectable()
 export class BudgetController {
-  static getAll = async (req: Request, res: Response): Promise<void> => {
+  constructor(private budgetService: BudgetService) {}
+
+  public getAll = async (req: Request, res: Response): Promise<void> => {
     try {
-      res.json(await BudgetService.getAll());
+      res.json(await this.budgetService.getAll());
     } catch ({ message }) {
       res.status(500).json({
         error: message,
@@ -15,12 +19,12 @@ export class BudgetController {
     }
   };
 
-  static getSingle = async (
+  public getSingle = async (
     { params }: Request,
     res: Response
   ): Promise<void> => {
     try {
-      const budget = await BudgetService.getSingle(params.budgetId);
+      const budget = await this.budgetService.getSingle(params.budgetId);
       if (!budget) {
         res.status(404).json({
           error: 'Resource not found!',
@@ -37,9 +41,9 @@ export class BudgetController {
     }
   };
 
-  static create = async ({ body }: Request, res: Response): Promise<void> => {
+  public create = async ({ body }: Request, res: Response): Promise<void> => {
     try {
-      const budget = await BudgetService.create(body);
+      const budget = await this.budgetService.create(body);
       res.json(budget);
     } catch (err: any) {
       res.status(err instanceof ConflictError ? 409 : 500);
@@ -50,12 +54,12 @@ export class BudgetController {
     }
   };
 
-  static update = async (
+  public update = async (
     { params, body }: Request,
     res: Response
   ): Promise<void> => {
     try {
-      const budget = await BudgetService.update(params.budgetId, body);
+      const budget = await this.budgetService.update(params.budgetId, body);
       logger.info('Resource updated');
       res.json(budget);
     } catch (err: any) {
@@ -68,9 +72,9 @@ export class BudgetController {
     }
   };
 
-  static delete = async ({ params }: Request, res: Response): Promise<void> => {
+  public delete = async ({ params }: Request, res: Response): Promise<void> => {
     try {
-      await BudgetService.delete(params.budgetId);
+      await this.budgetService.delete(params.budgetId);
 
       logger.info(`Resource has been deleted: ${params.budgetId}`);
       res.status(204).send();

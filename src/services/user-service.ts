@@ -1,39 +1,42 @@
+import { injectable } from 'tsyringe';
 import { UserDataAccess } from '../data-access';
 import { User } from '../interfaces/user';
 import { ConflictError } from '../errors/conflict-error';
-import { logger } from './core/winston-logger-service';
 
-class UserService {
-  getAll = async (): Promise<User[]> => UserDataAccess.getAll();
+@injectable()
+export class UserService {
+  constructor(private userDataAccess: UserDataAccess) {}
 
-  getSingle = async (userId: string): Promise<User | null> =>
-    UserDataAccess.getSingle(userId);
+  public getAll = async (): Promise<User[]> => this.userDataAccess.getAll();
 
-  getSingleByLogin = async (login: string): Promise<User | null> =>
-    UserDataAccess.findByLogin(login);
+  public getSingle = async (userId: string): Promise<User> =>
+    this.userDataAccess.getSingle(userId);
 
-  createNew = async (data: Omit<User, 'id'>): Promise<User> => {
-    const user = await UserDataAccess.findByLogin(data.login);
+  public getSingleByLogin = async (login: string): Promise<User> =>
+    this.userDataAccess.findByLogin(login);
+
+  public createNew = async (data: Omit<User, 'id'>): Promise<User> => {
+    const user = await this.userDataAccess.findByLogin(data.login);
     if (user) {
       throw new ConflictError('Resource already exists!');
     }
 
-    return UserDataAccess.create(data);
+    return this.userDataAccess.create(data);
   };
 
-  update = async (uuid: string, data: Partial<User>): Promise<User> =>
-    UserDataAccess.update(uuid, data);
+  public update = async (uuid: string, data: Partial<User>): Promise<User> =>
+    this.userDataAccess.update(uuid, data);
 
-  softDeleteUser = async (uuid: string): Promise<User> =>
-    UserDataAccess.update(uuid, {
+  public softDeleteUser = async (uuid: string): Promise<User> =>
+    this.userDataAccess.update(uuid, {
       isDeleted: true,
     });
 
-  autoSuggest = async (uuid: string, limit: number): Promise<User[]> =>
-    UserDataAccess.autoSuggest(uuid, limit);
+  public autoSuggest = async (uuid: string, limit: number): Promise<User[]> =>
+    this.userDataAccess.autoSuggest(uuid, limit);
 }
 
-const userService = new UserService();
-Object.freeze(userService);
-
-export { userService as UserService };
+// const userService = new UserService();
+// Object.freeze(userService);
+//
+// export { userService as UserService };

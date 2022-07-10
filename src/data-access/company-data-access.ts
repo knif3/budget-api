@@ -1,10 +1,21 @@
 import { v4 as uuid_v4 } from 'uuid';
+import { injectable } from 'tsyringe';
 import { Company } from '../interfaces/company';
 import { CompanyModel } from './models';
 import { NotFoundError } from '../errors/notfound-error';
 
-class CompanyDataAccess {
-  getAll = async (): Promise<Company[]> => {
+const convertCompanyModelToCompany = (companyModel: CompanyModel): Company =>
+  companyModel as unknown as Company;
+
+const convertCompanyModelsToCompany = (
+  companyModels: CompanyModel[]
+): Company[] => companyModels.map(convertCompanyModelToCompany);
+
+@injectable()
+export class CompanyDataAccess {
+  constructor() {}
+
+  public getAll = async (): Promise<Company[]> => {
     const companyModels = await CompanyModel.findAll({
       // include: [
       //   {
@@ -17,7 +28,7 @@ class CompanyDataAccess {
     return convertCompanyModelsToCompany(companyModels);
   };
 
-  getSingle = async (id: string): Promise<Company | null> => {
+  public getSingle = async (id: string): Promise<Company> => {
     const companyModel = await CompanyModel.findByPk(id, {
       // include: [
       //   {
@@ -27,18 +38,26 @@ class CompanyDataAccess {
       // ]
     });
 
-    return companyModel ? convertCompanyModelToCompany(companyModel) : null;
+    if (!companyModel) {
+      throw new Error('No user found!');
+    }
+
+    return convertCompanyModelToCompany(companyModel);
   };
 
-  findByTitle = async (title: string): Promise<Company | null> => {
+  public findByTitle = async (title: string): Promise<Company> => {
     const companyModel = await CompanyModel.findOne({
       where: { title },
     });
 
-    return companyModel ? convertCompanyModelToCompany(companyModel) : null;
+    if (!companyModel) {
+      throw new Error('No user found!');
+    }
+
+    return convertCompanyModelToCompany(companyModel);
   };
 
-  create = async (data: Partial<Company>): Promise<Company> => {
+  public create = async (data: Partial<Company>): Promise<Company> => {
     const companyModel = await CompanyModel.create({
       ...data,
       id: uuid_v4(),
@@ -49,7 +68,10 @@ class CompanyDataAccess {
     return convertCompanyModelToCompany(companyModel);
   };
 
-  update = async (uuid: string, data: Partial<Company>): Promise<Company> => {
+  public update = async (
+    uuid: string,
+    data: Partial<Company>
+  ): Promise<Company> => {
     const company = await CompanyModel.findByPk(uuid);
     if (!company) {
       throw new NotFoundError('Resource not found!');
@@ -63,7 +85,7 @@ class CompanyDataAccess {
     return convertCompanyModelToCompany(company);
   };
 
-  delete = async (uuid: string): Promise<boolean> => {
+  public delete = async (uuid: string): Promise<boolean> => {
     // TODO user validation
     const company = await CompanyModel.findByPk(uuid);
     if (!company) {
@@ -72,15 +94,6 @@ class CompanyDataAccess {
 
     await company.destroy();
 
-    return !!await CompanyModel.findByPk(uuid);
+    return !!(await CompanyModel.findByPk(uuid));
   };
 }
-
-const convertCompanyModelToCompany = (companyModel: CompanyModel): Company => (companyModel as unknown) as Company;
-
-const convertCompanyModelsToCompany = (companyModels: CompanyModel[]): Company[] => companyModels.map(convertCompanyModelToCompany);
-
-const companyDataAccess = new CompanyDataAccess();
-Object.freeze(companyDataAccess);
-
-export { companyDataAccess as CompanyDataAccess };

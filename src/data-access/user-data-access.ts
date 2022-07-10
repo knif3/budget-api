@@ -1,12 +1,22 @@
-import { v4 as uuid_v4 } from 'uuid';
+import { injectable } from 'tsyringe';
+import { v4 as uuidGen } from 'uuid';
 import { Op } from 'sequelize';
 import { User } from '../interfaces/user';
-import { TrafficModel, UserModel } from './models';
+import { UserModel } from './models';
 import { hash } from '../services/core/authenticate-service';
 import { NotFoundError } from '../errors/notfound-error';
 
-class UserDataAccess {
-  getAll = async (): Promise<User[]> => {
+const convertUserModelToUser = (userModel: UserModel): User =>
+  userModel as unknown as User;
+
+const convertUserModelsToUser = (userModels: UserModel[]): User[] =>
+  userModels.map(convertUserModelToUser);
+
+@injectable()
+export class UserDataAccess {
+  constructor() {}
+
+  public getAll = async (): Promise<User[]> => {
     const userModels = await UserModel.findAll({
       // include: [
       //   {
@@ -19,7 +29,7 @@ class UserDataAccess {
     return convertUserModelsToUser(userModels);
   };
 
-  getSingle = async (userId: string): Promise<User | null> => {
+  public getSingle = async (userId: string): Promise<User> => {
     const userModel = await UserModel.findByPk(userId, {
       // include: [
       //   {
@@ -29,21 +39,29 @@ class UserDataAccess {
       // ]
     });
 
-    return userModel ? convertUserModelToUser(userModel) : null;
+    if (!userModel) {
+      throw new Error('No user found!');
+    }
+
+    return convertUserModelToUser(userModel);
   };
 
-  findByLogin = async (login: string): Promise<User | null> => {
+  public findByLogin = async (login: string): Promise<User> => {
     const userModel = await UserModel.findOne({
       where: { login },
     });
 
-    return userModel ? convertUserModelToUser(userModel) : null;
+    if (!userModel) {
+      throw new Error('No user found!');
+    }
+
+    return convertUserModelToUser(userModel);
   };
 
-  create = async (data: Partial<User>): Promise<User> => {
+  public create = async (data: Partial<User>): Promise<User> => {
     const userModel = await UserModel.create({
       ...data,
-      id: uuid_v4(),
+      id: uuidGen(),
       password: hash(data.password || ''),
       isDeleted: false,
     });
@@ -51,7 +69,7 @@ class UserDataAccess {
     return convertUserModelToUser(userModel);
   };
 
-  update = async (uuid: string, data: Partial<User>): Promise<User> => {
+  public update = async (uuid: string, data: Partial<User>): Promise<User> => {
     const user = await UserModel.findByPk(uuid);
     if (!user) {
       throw new NotFoundError('Resource not found!');
@@ -65,16 +83,17 @@ class UserDataAccess {
     return convertUserModelToUser(user);
   };
 
-  autoSuggest = async (loginSubstring: string, limit: number): Promise<User[]> => {
+  public autoSuggest = async (
+    loginSubstring: string,
+    limit: number
+  ): Promise<User[]> => {
     const userModels = await UserModel.findAll({
       where: {
         login: {
           [Op.iLike]: `%${loginSubstring}%`,
         },
       },
-      order: [
-        ['login', 'ASC'],
-      ],
+      order: [['login', 'ASC']],
       limit,
       // include: [
       //   {
@@ -88,11 +107,7 @@ class UserDataAccess {
   };
 }
 
-const convertUserModelToUser = (userModel: UserModel): User => (userModel as unknown) as User;
-
-const convertUserModelsToUser = (userModels: UserModel[]): User[] => userModels.map(convertUserModelToUser);
-
-const userDataAccess = new UserDataAccess();
-Object.freeze(userDataAccess);
-
-export { userDataAccess as UserDataAccess };
+// const userDataAccess = new UserDataAccess();
+// Object.freeze(userDataAccess);
+//
+// export { userDataAccess as UserDataAccess };

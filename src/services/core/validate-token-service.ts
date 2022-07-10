@@ -2,7 +2,13 @@ import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { UserToken } from '../../interfaces/user-token';
 
-export let userToken: UserToken;
+export let userToken: UserToken = {
+  id: '',
+  login: '',
+  email: '',
+  iat: 0,
+  exp: 0,
+};
 
 export const validateToken = (
   req: Request,

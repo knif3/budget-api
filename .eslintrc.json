@@ -27,6 +27,9 @@
         "import/extensions": [
             "error",
             "never"
-        ]
+        ],
+        "import/prefer-default-export": 0,
+        "no-useless-constructor": "off",
+        "no-empty-function": "off"
     }
 }

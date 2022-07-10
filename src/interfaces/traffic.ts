@@ -1,5 +1,5 @@
 export interface Traffic {
-    id: string;
-    title: string;
-    amount: number;
+  id: string;
+  title: string;
+  amount: number;
 }

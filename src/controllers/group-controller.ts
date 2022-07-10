@@ -1,17 +1,17 @@
 import { Request, Response } from 'express';
 import { injectable } from 'tsyringe';
-import { TrafficService } from '../services/traffic-service';
 import { logger } from '../services/core/winston-logger-service';
 import { ConflictError } from '../errors/conflict-error';
 import { NotFoundError } from '../errors/notfound-error';
+import { GroupService } from '../services/group-service';
 
 @injectable()
-export class TrafficController {
-  constructor(private trafficService: TrafficService) {}
+export class GroupController {
+  constructor(private groupService: GroupService) {}
 
   public getAll = async (req: Request, res: Response): Promise<void> => {
     try {
-      res.json(await this.trafficService.getAll());
+      res.json(await this.groupService.getAll());
     } catch ({ message }) {
       res.status(500).json({
         error: message,
@@ -24,17 +24,17 @@ export class TrafficController {
     res: Response
   ): Promise<void> => {
     try {
-      const user = await this.trafficService.getSingle(params.trafficId);
-      if (!user) {
+      const group = await this.groupService.getSingle(params.groupId);
+      if (!group) {
         res.status(404).json({
-          error: 'Resource not found!',
+          error: 'Group not found!',
         });
         return;
       }
 
-      res.json(user);
+      res.json(group);
     } catch ({ message }) {
-      logger.error(`${message} ${params.trafficId}`);
+      logger.error(`${message} ${params.groupId}`);
       res.status(500).json({
         error: message,
       });
@@ -43,8 +43,8 @@ export class TrafficController {
 
   public create = async ({ body }: Request, res: Response): Promise<void> => {
     try {
-      const user = await this.trafficService.createNew(body);
-      res.json(user);
+      const group = await this.groupService.createNew(body);
+      res.json(group);
     } catch (err: any) {
       if (err instanceof ConflictError) {
         res.status(409);
@@ -63,29 +63,32 @@ export class TrafficController {
     res: Response
   ): Promise<void> => {
     try {
-      const user = await this.trafficService.update(params.trafficId, body);
-      logger.info('Resource updated');
-      res.json(user);
+      const group = await this.groupService.update(params.groupId, body);
+      logger.info('Group updated');
+      res.json(group);
     } catch (err: any) {
       res.status(err instanceof NotFoundError ? 404 : 500);
 
-      logger.error(`Failed to update resource: ${err.message}`);
+      logger.error(`Failed to update group: ${err.message}`);
       res.status(500).json({
-        message: `Failed to update resource! Error: ${err.message}`,
+        message: `Failed to update group! Error: ${err.message}`,
       });
     }
   };
 
-  public delete = async ({ params }: Request, res: Response): Promise<void> => {
+  public softDelete = async (
+    { params }: Request,
+    res: Response
+  ): Promise<void> => {
     try {
-      await this.trafficService.delete(params.trafficId);
+      const group = await this.groupService.softDeleteGroup(params.groupId);
 
-      logger.info(`Resource has been deleted: ${params.trafficId}`);
-      res.status(204).send();
+      logger.info(`Group has been soft-deleted: ${group}`);
+      res.status(200).json(group);
     } catch (err: any) {
       res.status(err instanceof NotFoundError ? 404 : 500);
 
-      logger.error(`Failed to delete resource: ${err.message}`);
+      logger.error(`Failed to soft-delete group: ${err.message}`);
       res.json({
         error: err.message,
       });

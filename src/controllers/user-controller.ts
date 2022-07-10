@@ -1,3 +1,4 @@
+import { injectable } from 'tsyringe';
 import { Request, Response } from 'express';
 import { UserService } from '../services/user-service';
 import { UserAutoSuggestsService } from '../services/user-auto-suggests-service';
@@ -8,10 +9,13 @@ import { NotFoundError } from '../errors/notfound-error';
 import { loginSchema } from '../schemas/login-schema';
 import { authenticate } from '../services/core/authenticate-service';
 
+@injectable()
 export class UserController {
-  static getAll = async (req: Request, res: Response): Promise<void> => {
+  constructor(private userService: UserService) {}
+
+  public getAll = async (req: Request, res: Response): Promise<void> => {
     try {
-      res.json(await UserService.getAll());
+      res.json(await this.userService.getAll());
     } catch ({ message }) {
       res.status(500).json({
         error: message,
@@ -19,12 +23,9 @@ export class UserController {
     }
   };
 
-  static getSingle = async (
-    { params }: Request,
-    res: Response
-  ): Promise<void> => {
+  public getSingle = async ({ params }: Request, res: Response): Promise<void> => {
     try {
-      const user = await UserService.getSingle(params.userId);
+      const user = await this.userService.getSingle(params.userId);
       if (!user) {
         res.status(404).json({
           error: 'User not found!',
@@ -41,9 +42,9 @@ export class UserController {
     }
   };
 
-  static create = async ({ body }: Request, res: Response): Promise<void> => {
+  public create = async ({ body }: Request, res: Response): Promise<void> => {
     try {
-      const user = await UserService.createNew(body);
+      const user = await this.userService.createNew(body);
       res.json(user);
     } catch (err: any) {
       if (err instanceof ConflictError) {
@@ -58,12 +59,9 @@ export class UserController {
     }
   };
 
-  static update = async (
-    { params, body }: Request,
-    res: Response
-  ): Promise<void> => {
+  public update = async ({ params, body }: Request, res: Response): Promise<void> => {
     try {
-      const user = await UserService.update(params.userId, body);
+      const user = await this.userService.update(params.userId, body);
       logger.info('User updated');
       res.json(user);
     } catch (err: any) {
@@ -76,12 +74,9 @@ export class UserController {
     }
   };
 
-  static softDelete = async (
-    { params }: Request,
-    res: Response
-  ): Promise<void> => {
+  public softDelete = async ({ params }: Request, res: Response): Promise<void> => {
     try {
-      const user = await UserService.softDeleteUser(params.userId);
+      const user = await this.userService.softDeleteUser(params.userId);
 
       logger.info(`User has been soft-deleted: ${user}`);
       res.status(200).json(user);
@@ -95,22 +90,19 @@ export class UserController {
     }
   };
 
-  // static generateFakeUsers = async (req: Request, res: Response): Promise<void> => {
+  // static generateFakeUsers(req: Request, res: Response): Promise<void> {
   //     await UserGenerateFakeDataService(100);
   //     logger.info('Generated fake users.');
   //     res.status(204).send();
   // };
 
-  static getAutoSuggestUsers = async (
-    req: Request,
-    res: Response
-  ): Promise<void> => {
+  public getAutoSuggestUsers = async (req: Request, res: Response): Promise<void> => {
     const { keyword, limit = '10' } = req.params;
     const results = await UserAutoSuggestsService(keyword, parseInt(limit, 10));
     res.json(results);
   };
 
-  static login = async ({ body }: Request, res: Response): Promise<void> => {
+  public login = async ({ body }: Request, res: Response): Promise<void> => {
     const loginData = {
       login: body.login,
       password: body.password,
@@ -126,10 +118,10 @@ export class UserController {
     }
 
     try {
-      const { userModel, token } = await authenticate({
-        login: loginData.login,
-        password: loginData.password,
-      });
+      const userModel = await this.userService.getSingleByLogin(
+        loginData.login
+      );
+      const token = await authenticate(userModel, loginData.password);
 
       logger.info(`Token generated for user: ${userModel.login}; ${token}`);
 

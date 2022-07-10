@@ -1,16 +1,17 @@
-import {
-  Request,
-  Response,
-} from 'express';
+import { Request, Response } from 'express';
+import { injectable } from 'tsyringe';
 import { CompanyService } from '../services/company-service';
 import { logger } from '../services/core/winston-logger-service';
 import { ConflictError } from '../errors/conflict-error';
 import { NotFoundError } from '../errors/notfound-error';
 
+@injectable()
 export class CompanyController {
-  static getAll = async (req: Request, res: Response): Promise<void> => {
+  constructor(private companyService: CompanyService) {}
+
+  public getAll = async (req: Request, res: Response): Promise<void> => {
     try {
-      res.json(await CompanyService.getAll());
+      res.json(await this.companyService.getAll());
     } catch ({ message }) {
       res.status(500).json({
         error: message,
@@ -18,9 +19,12 @@ export class CompanyController {
     }
   };
 
-  static getSingle = async ({ params }: Request, res: Response): Promise<void> => {
+  public getSingle = async (
+    { params }: Request,
+    res: Response
+  ): Promise<void> => {
     try {
-      const user = await CompanyService.getSingle(params.companyId);
+      const user = await this.companyService.getSingle(params.companyId);
       if (!user) {
         res.status(404).json({
           error: 'Resource not found!',
@@ -37,9 +41,9 @@ export class CompanyController {
     }
   };
 
-  static create = async ({ body }: Request, res: Response): Promise<void> => {
+  public create = async ({ body }: Request, res: Response): Promise<void> => {
     try {
-      const user = await CompanyService.create(body);
+      const user = await this.companyService.create(body);
       res.json(user);
     } catch (err: any) {
       if (err instanceof ConflictError) {
@@ -54,9 +58,12 @@ export class CompanyController {
     }
   };
 
-  static update = async ({ params, body }: Request, res: Response): Promise<void> => {
+  public update = async (
+    { params, body }: Request,
+    res: Response
+  ): Promise<void> => {
     try {
-      const user = await CompanyService.update(params.companyId, body);
+      const user = await this.companyService.update(params.companyId, body);
       logger.info('Resource updated');
       res.json(user);
     } catch (err: any) {
@@ -69,9 +76,9 @@ export class CompanyController {
     }
   };
 
-  static delete = async ({ params }: Request, res: Response): Promise<void> => {
+  public delete = async ({ params }: Request, res: Response): Promise<void> => {
     try {
-      await CompanyService.delete(params.companyId);
+      await this.companyService.delete(params.companyId);
 
       logger.info(`Resource has been deleted: ${params.companyId}`);
       res.status(204).send();

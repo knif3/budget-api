@@ -10,16 +10,6 @@ components:
       type: http
       scheme: bearer
 paths:
-  /v1/items:
-    get:
-      tags:
-        - default
-      summary: Get Items
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
   /api/v1/user/getAll:
     get:
       tags:

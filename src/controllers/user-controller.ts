@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { Request, Response } from 'express';
 import { UserService } from '../services/user-service';
 import { UserAutoSuggestsService } from '../services/user-auto-suggests-service';
@@ -9,7 +9,7 @@ import { NotFoundError } from '../errors/notfound-error';
 import { loginSchema } from '../schemas/login-schema';
 import { authenticate } from '../services/core/authenticate-service';
 
-@injectable()
+@singleton()
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -23,7 +23,10 @@ export class UserController {
     }
   };
 
-  public getSingle = async ({ params }: Request, res: Response): Promise<void> => {
+  public getSingle = async (
+    { params }: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const user = await this.userService.getSingle(params.userId);
       if (!user) {
@@ -59,7 +62,10 @@ export class UserController {
     }
   };
 
-  public update = async ({ params, body }: Request, res: Response): Promise<void> => {
+  public update = async (
+    { params, body }: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const user = await this.userService.update(params.userId, body);
       logger.info('User updated');
@@ -74,7 +80,10 @@ export class UserController {
     }
   };
 
-  public softDelete = async ({ params }: Request, res: Response): Promise<void> => {
+  public softDelete = async (
+    { params }: Request,
+    res: Response
+  ): Promise<void> => {
     try {
       const user = await this.userService.softDeleteUser(params.userId);
 
@@ -96,7 +105,10 @@ export class UserController {
   //     res.status(204).send();
   // };
 
-  public getAutoSuggestUsers = async (req: Request, res: Response): Promise<void> => {
+  public getAutoSuggestUsers = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     const { keyword, limit = '10' } = req.params;
     const results = await UserAutoSuggestsService(keyword, parseInt(limit, 10));
     res.json(results);

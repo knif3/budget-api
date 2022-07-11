@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { CompanyService } from '../services/company-service';
 import { logger } from '../services/core/winston-logger-service';
 import { ConflictError } from '../errors/conflict-error';
 import { NotFoundError } from '../errors/notfound-error';
 
-@injectable()
+@singleton()
 export class CompanyController {
   constructor(private companyService: CompanyService) {}
 

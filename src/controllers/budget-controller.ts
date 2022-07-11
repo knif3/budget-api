@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { BudgetService } from '../services/budget-service';
 import { logger } from '../services/core/winston-logger-service';
 import { ConflictError } from '../errors/conflict-error';
 import { NotFoundError } from '../errors/notfound-error';
 
-@injectable()
+@singleton()
 export class BudgetController {
   constructor(private budgetService: BudgetService) {}
 

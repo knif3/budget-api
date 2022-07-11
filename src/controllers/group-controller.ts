@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { logger } from '../services/core/winston-logger-service';
 import { ConflictError } from '../errors/conflict-error';
 import { NotFoundError } from '../errors/notfound-error';
 import { GroupService } from '../services/group-service';
 
-@injectable()
+@singleton()
 export class GroupController {
   constructor(private groupService: GroupService) {}
 

@@ -1,10 +1,10 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { TrafficDataAccess } from '../data-access';
 import { Traffic } from '../interfaces/traffic';
 import { ConflictError } from '../errors/conflict-error';
 
-@injectable()
-export class TrafficService {
+@singleton()
+export default class TrafficService {
   constructor(private trafficDataAccess: TrafficDataAccess) {}
 
   getAll = async (): Promise<Traffic[]> => this.trafficDataAccess.getAll();

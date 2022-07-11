@@ -1,9 +1,9 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { GroupDataAccess } from '../data-access';
 import { Group } from '../interfaces/group';
 import { ConflictError } from '../errors/conflict-error';
 
-@injectable()
+@singleton()
 export class GroupService {
   constructor(private groupDataAccess: GroupDataAccess) {}
 

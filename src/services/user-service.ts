@@ -1,9 +1,9 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { UserDataAccess } from '../data-access';
 import { User } from '../interfaces/user';
 import { ConflictError } from '../errors/conflict-error';
 
-@injectable()
+@singleton()
 export class UserService {
   constructor(private userDataAccess: UserDataAccess) {}
 
@@ -35,8 +35,3 @@ export class UserService {
   public autoSuggest = async (uuid: string, limit: number): Promise<User[]> =>
     this.userDataAccess.autoSuggest(uuid, limit);
 }
-
-// const userService = new UserService();
-// Object.freeze(userService);
-//
-// export { userService as UserService };

@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { v4 as uuidGen } from 'uuid';
 import { Op } from 'sequelize';
 import { User } from '../interfaces/user';
@@ -12,7 +12,7 @@ const convertUserModelToUser = (userModel: UserModel): User =>
 const convertUserModelsToUser = (userModels: UserModel[]): User[] =>
   userModels.map(convertUserModelToUser);
 
-@injectable()
+@singleton()
 export class UserDataAccess {
   constructor() {}
 
@@ -106,8 +106,3 @@ export class UserDataAccess {
     return convertUserModelsToUser(userModels);
   };
 }
-
-// const userDataAccess = new UserDataAccess();
-// Object.freeze(userDataAccess);
-//
-// export { userDataAccess as UserDataAccess };

@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { Budget } from '../interfaces/budget';
 import { BudgetModel, UserModel } from './models';
 import { NotFoundError } from '../errors/notfound-error';
@@ -11,7 +11,7 @@ const convertBudgetModelToBudget = (budgetModel: BudgetModel): Budget =>
 const convertBudgetModelsToBudget = (budgetModels: BudgetModel[]): Budget[] =>
   budgetModels.map(convertBudgetModelToBudget);
 
-@injectable()
+@singleton()
 export class BudgetDataAccess {
   constructor() {}
 

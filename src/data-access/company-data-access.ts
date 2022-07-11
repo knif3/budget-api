@@ -1,5 +1,5 @@
 import { v4 as uuid_v4 } from 'uuid';
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { Company } from '../interfaces/company';
 import { CompanyModel } from './models';
 import { NotFoundError } from '../errors/notfound-error';
@@ -11,7 +11,7 @@ const convertCompanyModelsToCompany = (
   companyModels: CompanyModel[]
 ): Company[] => companyModels.map(convertCompanyModelToCompany);
 
-@injectable()
+@singleton()
 export class CompanyDataAccess {
   constructor() {}
 

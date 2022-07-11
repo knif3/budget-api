@@ -1,5 +1,5 @@
-import { v4 as uuid_v4 } from 'uuid';
-import { injectable } from 'tsyringe';
+import { v4 as uuidV4 } from 'uuid';
+import { singleton } from 'tsyringe';
 import { Traffic } from '../interfaces/traffic';
 import { BudgetModel, CompanyModel, TrafficModel } from './models';
 import { NotFoundError } from '../errors/notfound-error';
@@ -12,7 +12,7 @@ const convertTrafficModelsToTraffic = (
   trafficModels: TrafficModel[]
 ): Traffic[] => trafficModels.map(convertTrafficModelToTraffic);
 
-@injectable()
+@singleton()
 export class TrafficDataAccess {
   constructor() {}
 
@@ -67,7 +67,7 @@ export class TrafficDataAccess {
   public create = async (data: Partial<Traffic>): Promise<Traffic> => {
     const trafficModel = await TrafficModel.create({
       ...data,
-      id: uuid_v4(),
+      id: uuidV4(),
       amount: data.amount,
       isDeleted: false,
     });

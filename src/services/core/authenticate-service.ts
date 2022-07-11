@@ -2,7 +2,6 @@ import crypto, { BinaryLike } from 'crypto';
 import jwt from 'jsonwebtoken';
 import { User } from '../../interfaces/user';
 
-// const userService = container.resolve(UserService);
 const userHashSecretKey = process.env.USER_HASH_SECRET_KEY || '';
 
 export const hash = (msg: BinaryLike) =>

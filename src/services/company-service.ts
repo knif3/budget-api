@@ -1,11 +1,11 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { CompanyDataAccess } from '../data-access';
 import { Company } from '../interfaces/company';
 import { ConflictError } from '../errors/conflict-error';
 
-@injectable()
+@singleton()
 export class CompanyService {
-  constructor(private companyDataAccess: CompanyDataAccess) {}
+  constructor(private readonly companyDataAccess: CompanyDataAccess) {}
 
   getAll = async (): Promise<Company[]> => this.companyDataAccess.getAll();
 

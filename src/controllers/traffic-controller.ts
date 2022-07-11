@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { injectable } from 'tsyringe';
-import { TrafficService } from '../services/traffic-service';
+import { singleton } from 'tsyringe';
 import { logger } from '../services/core/winston-logger-service';
 import { ConflictError } from '../errors/conflict-error';
 import { NotFoundError } from '../errors/notfound-error';
+import TrafficService from '../services/traffic-service';
 
-@injectable()
-export class TrafficController {
+@singleton()
+export default class TrafficController {
   constructor(private trafficService: TrafficService) {}
 
   public getAll = async (req: Request, res: Response): Promise<void> => {

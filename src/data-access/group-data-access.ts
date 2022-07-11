@@ -1,5 +1,5 @@
 import { v4 as uuid_gen } from 'uuid';
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { Group } from '../interfaces/group';
 import { NotFoundError } from '../errors/notfound-error';
 import { GroupModel } from './models/group-model';
@@ -10,7 +10,7 @@ const GroupModelToGroup = (groupModel: GroupModel): Group =>
 const convertGroupModelsToGroup = (groupModels: GroupModel[]): Group[] =>
   groupModels.map(GroupModelToGroup);
 
-@injectable()
+@singleton()
 export class GroupDataAccess {
   constructor() {}
 

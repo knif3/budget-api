@@ -1,9 +1,9 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { BudgetDataAccess } from '../data-access';
 import { Budget } from '../interfaces/budget';
 import { ConflictError } from '../errors/conflict-error';
 
-@injectable()
+@singleton()
 export class BudgetService {
   constructor(private budgetDataAccess: BudgetDataAccess) {}
 
